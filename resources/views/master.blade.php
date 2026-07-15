@@ -7,7 +7,8 @@
     <meta name="keywords" content="TANDS,TNDC,EASDC,Debates,Tanzania National Debate Society,Tanzania National Debate Championship,East Africa Schools Debate Championship,Quiz Challenge,Public Speaking,Debate Organisation in Tanzania">
     <meta name="description" content="Welcome to the Tanzania National Debate Society (TANDS). Join us in promoting debates in Tanzania and enhancing public speaking skills.">
     <meta name="google-site-verification" content="mlhw_Wlte3OQdaprBsDJYfx7QGrTp-Wekqjs3b_AJVM" />
-    
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+
     <title>@yield('title')</title>
     <link rel="canonical" href="@yield('canonical')"/> 
     
@@ -18,6 +19,9 @@
     <link rel="stylesheet" href="{{ asset('css/app.css') }}">
 
     <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
     <link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
     {{-- Bootstrap --}}
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet"
@@ -175,13 +179,18 @@
             height: 40px;
         }
 
-        .section1 {
+        .hero-section {
             position: relative;
             overflow: hidden;
-            height: 100vh;
+            height: 92vh;
+            min-height: 560px;
+            display: flex;
+            align-items: center;
+            justify-content: flex-start;
         }
-        .image-slide1 {
-            position: relative;
+        .hero-slides {
+            position: absolute;
+            inset: 0;
             width: 100%;
             height: 100%;
         }
@@ -192,7 +201,7 @@
             width: 100%;
             height: 100%;
             opacity: 0;
-            transition: opacity 1s ease-in-out;
+            transition: opacity 1.2s ease-in-out;
         }
         .slide1.active {
             opacity: 1;
@@ -201,25 +210,157 @@
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 1s ease-in-out;
+            transition: transform 6s ease-out;
+            transform: scale(1.02);
         }
         .slide1.active img {
-            transform: scale(1.1);
+            transform: scale(1.12);
         }
-       
-        .slide-overlay {
+        .hero-scrim {
             position: absolute;
-            bottom: 0;
+            inset: 0;
+            background: linear-gradient(180deg, rgba(10, 12, 28, .35) 0%, rgba(10, 12, 28, .35) 40%, rgba(10, 12, 28, .88) 100%);
+            z-index: 1;
+        }
+        .hero-content {
+            position: relative;
+            z-index: 2;
+            max-width: 780px;
+            width: 100%;
+            padding: 0 24px 0 clamp(24px, 6vw, 96px);
+            text-align: left;
+            color: #fff;
+        }
+        .hero-eyebrow {
+            display: block;
+            font-family: 'Poppins', sans-serif;
+            font-size: .8rem;
+            font-weight: 600;
+            letter-spacing: .18em;
+            text-transform: uppercase;
+            color: #8fd1ea;
+            margin-bottom: 18px;
+        }
+        /* Reserves space for the tallest title+description pairing so the
+           CTA row below doesn't jump as slides with different text cross-fade. */
+        .hero-text-slides {
+            position: relative;
+            min-height: 170px;
+        }
+        .hero-text-slide {
+            position: absolute;
+            top: 0;
             left: 0;
             width: 100%;
-            height: 30%;
-            background: linear-gradient(to top, rgba(50, 51, 102, 1.5), rgba(50, 51, 102, 0) 100%);
+            opacity: 0;
+            transition: opacity 1.2s ease-in-out;
+        }
+        .hero-text-slide.active {
+            opacity: 1;
+        }
+        .hero-heading {
+            font-family: 'Poppins', sans-serif !important;
+            font-weight: 700 !important;
+            font-size: clamp(1.9rem, 4vw, 3rem) !important;
+            line-height: 1.2;
+            margin: 0 0 16px !important;
+            color: #fff !important;
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            text-align: left;
+        }
+        .hero-subtitle {
+            font-family: 'Poppins', sans-serif !important;
+            font-size: 1.05rem !important;
+            font-weight: 300;
+            color: rgba(255,255,255,.82) !important;
+            max-width: 100%;
+            margin: 0 0 32px !important;
+            line-height: 1.7;
+            text-align: left;
+        }
+        .hero-cta {
+            display: flex;
+            align-items: center;
+            gap: 28px;
+            flex-wrap: wrap;
+            justify-content: flex-start;
+        }
+        .btn-hero-primary {
+            display: inline-block;
+            padding: 13px 30px;
+            font-family: 'Poppins', sans-serif;
+            font-size: .92rem;
+            font-weight: 600;
+            border-radius: 6px;
+            text-decoration: none;
+            background: #03A3DE;
+            color: #fff;
+            transition: background .2s ease;
+        }
+        .btn-hero-primary:hover {
+            background: #0b8ec2;
+            color: #fff;
+        }
+        .btn-hero-ghost {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            font-family: 'Poppins', sans-serif;
+            font-size: .92rem;
+            font-weight: 500;
+            color: #fff;
+            text-decoration: none;
+            border-bottom: 1px solid rgba(255,255,255,.4);
+            padding-bottom: 3px;
+            transition: border-color .2s ease, opacity .2s ease;
+        }
+        .btn-hero-ghost:hover {
+            color: #fff;
+            border-color: #fff;
+        }
+        .hero-controls {
+            position: absolute;
+            left: 0;
+            right: 0;
+            bottom: 30px;
+            z-index: 3;
             display: flex;
             align-items: center;
             justify-content: center;
-            color: white;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-            box-sizing: border-box;
+            gap: 20px;
+        }
+        .hero-arrow {
+            background: none;
+            border: none;
+            color: rgba(255,255,255,.65);
+            font-size: 1.4rem;
+            line-height: 1;
+            cursor: pointer;
+            padding: 4px;
+            transition: color .2s ease;
+        }
+        .hero-arrow:hover {
+            color: #fff;
+        }
+        .hero-dots {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .hero-dots .hero-dot {
+            width: 7px;
+            height: 7px;
+            border-radius: 4px;
+            background: rgba(255,255,255,.35);
+            border: none;
+            cursor: pointer;
+            transition: background .25s ease, width .25s ease;
+            padding: 0;
+        }
+        .hero-dots .hero-dot.active {
+            background: #fff;
+            width: 22px;
         }
         .slide-text {
             text-align: center;
@@ -403,8 +544,8 @@
         .image-text {
             position: absolute;
             top: 85%;
-            left: 10%;
-            transform: translate(-50%, -50%);
+            left: 24px;
+            transform: translateY(-50%);
             color: white;
             text-align: center;
             opacity: 0.7;
@@ -603,54 +744,271 @@
 
         .section8 {
             width: 100%;
-            background: linear-gradient(to left, #03A3DE, #323366);
-            padding: 20px 0;
-            color: white;
+            background: #323366;
+            padding: 72px 0 56px;
+            color: #fff;
             overflow: hidden;
             box-sizing: border-box;
         }
 
+        .section8 .row {
+            align-items: flex-start;
+        }
+
+        .section8 .container h3 {
+            text-align: left !important;
+            margin: 0 0 22px !important;
+        }
+
+        .section8 .container h3::after {
+            margin: 14px 0 0 !important;
+        }
+
         .section8 form {
-            width: 90%;
-            margin-left: 5%;
+            width: 100%;
+            margin-left: 0;
+        }
+
+        .footer-label {
+            color: rgba(255, 255, 255, .82) !important;
+            font-size: .88rem;
+            margin-bottom: 6px;
+        }
+
+        .footer-input {
+            background: rgba(255, 255, 255, .06) !important;
+            border: 1px solid rgba(255, 255, 255, .18) !important;
+            color: #fff !important;
+            border-radius: 6px !important;
+        }
+
+        .footer-input::placeholder {
+            color: rgba(255, 255, 255, .45);
+        }
+
+        .footer-input:focus {
+            background: rgba(255, 255, 255, .1) !important;
+            border-color: #03A3DE !important;
+            box-shadow: 0 0 0 .2rem rgba(3, 163, 222, .25) !important;
+            color: #fff !important;
+        }
+
+        .footer-help {
+            color: rgba(255, 255, 255, .5) !important;
+            font-size: .8rem;
+        }
+
+        .footer-submit-btn {
+            background: #03A3DE;
+            color: #fff;
+            border: none;
+            border-radius: 6px;
+            padding: 10px 24px;
+            font-weight: 500;
+            transition: background .2s ease;
+        }
+
+        .footer-submit-btn:hover {
+            background: #0b8ec2;
+            color: #fff;
+        }
+
+        .footer-submit-btn i {
+            margin-right: 8px;
+        }
+
+        .footer-notify {
+            display: block;
+            margin-top: 10px;
+            color: #8fd1ea;
+            font-size: .9rem;
         }
 
         .usefulLinks {
-            color: white;
-            text-align: center;
+            color: #fff;
+            text-align: left;
+        }
+
+        .footerLinks {
+            display: flex;
+            flex-direction: column;
         }
 
         .footerLinks a {
-            text-align: center;
-            padding: 8px 32px 8px 8px;
+            text-align: left;
+            padding: 6px 0;
             text-decoration: none;
             font-size: 15px;
-            color: white;
+            color: rgba(255, 255, 255, .82);
             display: block;
-            transition: 0.3s;
+            transition: color 0.2s ease;
         }
 
         .footerLinks a:hover {
-            text-align: center;
-            padding: 8px 32px 8px 8px;
-            text-decoration: none;
+            color: #6cc9ea;
+        }
+
+        .footer-brand {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 800;
+            font-size: 1.6rem;
+            color: #fff;
+            letter-spacing: .04em;
+            margin-bottom: 14px;
+        }
+
+        .footer-tagline {
+            color: rgba(255, 255, 255, .72);
+            font-size: .92rem;
+            line-height: 1.7;
+            margin-bottom: 22px;
+            max-width: 260px;
+        }
+
+        .footer-contact-list {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            color: rgba(255, 255, 255, .82);
             font-size: 15px;
-            color: #323366;
-            display: block;
-            transition: 0.3s;
+        }
+
+        .footer-contact-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 10px;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+
+        .footer-contact-list i {
+            color: #6cc9ea;
+            width: 16px;
+            margin-top: 4px;
+            flex-shrink: 0;
+        }
+
+        .footer-contact-list a {
+            color: rgba(255, 255, 255, .82);
+            text-decoration: none;
+            transition: color .2s ease;
+        }
+
+        .footer-contact-list a:hover {
+            color: #6cc9ea;
+        }
+
+        .footer-social {
+            display: flex;
+            gap: 14px;
+            margin-top: 4px;
+        }
+
+        .footer-social a {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            border: 1px solid rgba(255, 255, 255, .25);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            transition: background .2s ease, border-color .2s ease;
+        }
+
+        .footer-social a:hover {
+            background: #03A3DE;
+            border-color: #03A3DE;
+        }
+
+        .footer-copyright {
+            width: 100%;
+            background: #2a2c52;
+            padding: 18px 0;
+        }
+
+        .footer-copyright p {
+            text-align: center;
+            font-size: 14px;
+            color: rgba(255, 255, 255, .6);
+            margin: 0;
+        }
+
+        .footer-copyright a {
+            color: rgba(255, 255, 255, .8);
+            text-decoration: none;
+            transition: color .2s ease;
+        }
+
+        .footer-copyright a:hover {
+            color: #6cc9ea;
+            text-decoration: underline;
         }
 
 
 
-        .slideshow-container {
+        .testimonials-section {
+            background: #f8fafc;
+            padding: 70px 0;
+        }
+
+        .testimonial-carousel {
             position: relative;
-            background: #f1f1f1f1;
+            max-width: 720px;
+            margin: 36px auto 0;
+        }
+
+        .testimonial-card {
+            background: #fff;
+            border: 1px solid #edf0f4;
+            border-radius: 14px;
+            box-shadow: 0 4px 20px rgba(15, 23, 42, .06);
+            padding: 48px 56px;
+            text-align: center;
+        }
+
+        .testimonial-quote-icon {
+            color: #03A3DE;
+            opacity: .18;
+            font-size: 2.6rem;
         }
 
         .mySlides {
             display: none;
-            text-align: center;
-            text-decoration: none;
+        }
+
+        .testimonial-message {
+            font-size: 1.15rem;
+            font-style: italic;
+            line-height: 1.7;
+            color: #24263b;
+            margin: 14px 0 24px;
+        }
+
+        .testimonial-author {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+        }
+
+        .testimonial-avatar {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: #323366;
+            color: #fff;
+            font-weight: 700;
+            font-size: .9rem;
+            flex-shrink: 0;
+        }
+
+        .testimonial-name {
+            font-weight: 600;
+            color: #24263b;
         }
 
         .prev,
@@ -658,56 +1016,75 @@
             cursor: pointer;
             position: absolute;
             top: 50%;
-            width: auto;
-            margin-top: -30px;
-            padding: 16px;
-            color: #888;
+            transform: translateY(-50%);
+            width: 44px;
+            height: 44px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #fff;
+            border: 1px solid #edf0f4;
+            border-radius: 50%;
+            color: #24263b;
             font-weight: bold;
-            font-size: 20px;
-            border-radius: 0 3px 3px 0;
+            font-size: 18px;
+            box-shadow: 0 2px 8px rgba(15, 23, 42, .08);
             user-select: none;
+            transition: background .2s ease, color .2s ease;
+        }
+
+        .prev {
+            left: -22px;
         }
 
         .next {
-            position: absolute;
-            right: 0;
-            border-radius: 3px 0 0 3px;
+            right: -22px;
         }
 
         .prev:hover,
         .next:hover {
-            background-color: rgba(0, 0, 0, 0.8);
-            color: white;
+            background-color: #24263b;
+            color: #fff;
+        }
+
+        @media (max-width: 768px) {
+            .testimonial-card {
+                padding: 36px 24px;
+            }
+
+            .prev {
+                left: 4px;
+            }
+
+            .next {
+                right: 4px;
+            }
         }
 
         .dot-container {
             text-align: center;
-            padding: 20px;
-            background: #ddd;
+            padding: 20px 0 0;
         }
 
         .dot {
             cursor: pointer;
-            height: 15px;
-            width: 15px;
-            margin: 0 2px;
-            background-color: #bbb;
+            height: 10px;
+            width: 10px;
+            margin: 0 4px;
+            background-color: #cbd5e1;
             border-radius: 50%;
             display: inline-block;
-            transition: background-color 0.6s ease;
+            transition: background-color 0.3s ease, transform 0.3s ease;
         }
 
-        .active,
+        .dot.active,
         .dot:hover {
-            background-color: #717171;
+            background-color: #03A3DE;
+            transform: scale(1.2);
         }
 
         q {
             font-style: italic;
-        }
-
-        .author {
-            color: cornflowerblue;
         }
 
 
@@ -735,16 +1112,6 @@
 
         .fancybox-image {
             filter: contrast(140%);
-        }
-        .imageryText {
-            font-size: 50px; 
-            margin: 0;
-            font-weight: bold;
-        }
-        .imageryDescription {
-            font-size: 1em; 
-            margin-top: 10px;
-            margin-left: 30px;
         }
 
 
@@ -815,84 +1182,46 @@
                 transform: translateY(0);
                 opacity: 1;
             }
-            .section1 {
-    position: relative;
-    overflow: hidden;
-    height: 40vh; /* Adjust based on your design */
-    margin-top: 50px;
-}
+            .hero-section {
+                height: 78vh;
+                min-height: 460px;
+                margin-top: 0;
+            }
 
-.gradient-overlay {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5));
-    z-index: 1;
-}
+            .hero-content {
+                padding: 0 22px;
+                text-align: center;
+            }
 
-.image-slide1 {
-    position: relative;
-    width: 100%;
-    height: 100%;
-    z-index: 0;
-}
+            .hero-heading, .hero-subtitle {
+                text-align: center;
+            }
 
-.slide1 {
-    position: absolute;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    opacity: 0;
-    transition: opacity 1s ease-in-out;
-}
+            .hero-text-slides {
+                min-height: 210px;
+            }
 
-.slide1 img {
-    width: 100%;
-    height: 100%;
-    object-fit: cover;
-    transition: transform 1s ease-in-out;
-}
+            .hero-cta {
+                justify-content: center;
+            }
 
-.slide1.active {
-    opacity: 1;
-}
+            .hero-eyebrow {
+                font-size: .68rem;
+                margin-bottom: 16px;
+            }
 
-.slide1.active img {
-    transform: scale(1.1);
-}
+            .hero-subtitle {
+                margin: 0 auto 26px !important;
+            }
 
-.slide-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            height: 30%;
-            background: linear-gradient(to top, rgba(50, 51, 102, 1.5), rgba(50, 51, 102, 0) 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: white;
-            text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.7);
-            box-sizing: border-box;
-        }
-        .slide-text {
-            text-align: center;
-            max-width: 90%;
-        }
-        .imageryText {
-            font-size: 20px; /* Adjust size as needed */
-            margin: 0;
-            font-weight: bold;
-        }
-        .imageryDescription {
-            font-size: 1em; /* Adjust size as needed */
-            margin-top: 10px;
-            margin-left: 30px;
-        }
+            .hero-controls {
+                bottom: 18px;
+                gap: 14px;
+            }
 
+            .hero-arrow {
+                font-size: 1.2rem;
+            }
 
 .publicSpeaking{
             margin-top: 40px;
@@ -954,50 +1283,20 @@
 
             .section8 {
                 width: 100%;
-                padding: 20px 0;
+                padding: 48px 0 32px;
                 color: white;
                 overflow: hidden;
                 box-sizing: border-box;
             }
 
-
-            .section8 form {
-                width: 90%;
-                margin-left: 5%;
-            }
-
-
-
             .usefulLinks {
                 text-align: left;
                 color: white;
-                margin-top: 10px
+                margin-top: 10px;
             }
 
             .footerLinks a {
-                text-align: left;
-                padding: 8px 32px 8px 8px;
-                text-decoration: none;
-                font-size: 15px;
-                color: white;
-                display: block;
-                transition: 0.3s;
-                margin-left: 50px;
-            }
-
-            .footerLinks a:hover {
-                text-align: left;
-                padding: 8px 32px 8px 8px;
-                text-decoration: none;
-                font-size: 15px;
-                color: #323366;
-                display: block;
-                transition: 0.3s;
-                margin-left: 50px;
-            }
-
-            .weAreSocial {
-                display: none;
+                margin-left: 0;
             }
 
             .partner-logo {
@@ -1170,9 +1469,151 @@
             height: 50%;
         }
 
-            
 
 
+
+        }
+
+        /* ==========================================================
+           Design pass: Poppins, restrained editorial section headers,
+           bordered cards, solid buttons. Brand colors used deliberately
+           (navy #323366, blue #03A3DE, green #3BAA3E as a rare accent)
+           rather than blanket gradients.
+           ========================================================== */
+        body, h1, h2, h3, h4, h5, h6, p, a, span, li, label, button,
+        input, textarea, select, .navigation, .pheader, .pheader2,
+        .text-overlay h3, .text-overlay p {
+            font-family: 'Poppins', sans-serif !important;
+        }
+
+        h3 {
+            text-align: center !important;
+            margin: 0 auto !important;
+            font-weight: 700 !important;
+            font-size: clamp(1.5rem, 4.5vw, 2rem) !important;
+            color: #24263b !important;
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            letter-spacing: -.01em;
+        }
+
+        h3::after {
+            content: '';
+            display: block;
+            width: 52px;
+            height: 3px;
+            background: #03A3DE;
+            margin: 16px auto 0;
+            border-radius: 2px;
+        }
+
+        /* .pheader: muted tagline under a section h3 (e.g. "We invest
+           in meaningful programs"). .pheader2: a card's own title
+           (stat label, program name, team member name) - it needs to
+           read as a heading, not a caption, so it stays dark and firm. */
+        .pheader {
+            text-align: center !important;
+            margin: 8px auto 0 !important;
+            font-weight: 400 !important;
+            font-size: 1rem !important;
+            color: #6b7280 !important;
+            background: none !important;
+            -webkit-background-clip: unset !important;
+        }
+
+        .pheader2 {
+            text-align: center !important;
+            margin: 14px auto 4px !important;
+            font-weight: 600 !important;
+            font-size: 1.05rem !important;
+            color: #24263b !important;
+            background: none !important;
+            -webkit-background-clip: unset !important;
+        }
+
+        h1 {
+            text-align: center !important;
+            margin: 0 auto !important;
+            font-weight: 700 !important;
+            font-size: clamp(1.7rem, 5vw, 2.3rem) !important;
+            color: #24263b !important;
+            background: none !important;
+            -webkit-background-clip: unset !important;
+            letter-spacing: -.01em;
+        }
+
+        /* Modal titles are dialog headers, not section titles -
+           keep them plain and left-aligned next to the close button. */
+        .modal-title {
+            text-align: left !important;
+            margin: 0 !important;
+            font-size: 1.3rem !important;
+        }
+
+        .modal-title::after {
+            display: none;
+        }
+
+        /* Headings placed over a dark photo (Subscribe band) or the
+           dark footer need to stay white, not the default navy color. */
+        .text-overlay h3, .text-overlay .pheader, .text-overlay p,
+        .section8 h3 {
+            color: #fff !important;
+        }
+
+        .text-overlay h3::after, .section8 h3::after {
+            background: #6cc9ea;
+        }
+
+        .stat-badge-overlay {
+            display: inline-block;
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
+            font-size: 2.4rem;
+            line-height: 1.1;
+            color: #fff;
+        }
+
+        .text-overlay h3::after {
+            background: #6cc9ea;
+        }
+
+        /* Cards: quiet borders instead of heavy floating shadows */
+        .card {
+            border: 1px solid #edf0f4 !important;
+            border-radius: 10px !important;
+            box-shadow: 0 1px 2px rgba(15, 23, 42, .04);
+            transition: border-color .2s ease, box-shadow .2s ease;
+        }
+
+        .card:hover {
+            border-color: #d8e3ec !important;
+            box-shadow: 0 4px 14px rgba(15, 23, 42, .06);
+        }
+
+        .individualCard:hover .card-content {
+            transform: none;
+            box-shadow: none;
+        }
+
+        /* Buttons: solid brand navy, modest radius, no gradients */
+        .btn-primary {
+            background: #24263b !important;
+            border: 1px solid #24263b !important;
+            border-radius: 6px !important;
+            padding: 10px 24px !important;
+            font-weight: 500 !important;
+            box-shadow: none !important;
+            transition: background .2s ease, border-color .2s ease;
+        }
+
+        .btn-primary:hover {
+            background: #03A3DE !important;
+            border-color: #03A3DE !important;
+        }
+
+        .gallery-item img, .partner-logo, .backgroundImage2 {
+            border-radius: 6px;
         }
     </style>
 </head>
@@ -1181,7 +1622,6 @@
     @include('FrontEnd.includes.header')
 
     @yield('content')
-    @include('FrontEnd.includes.bottomNavigation')
 
     @include('FrontEnd.includes.footer')
 
@@ -1212,53 +1652,37 @@
     </script>
      <script>
         document.addEventListener('DOMContentLoaded', () => {
-            const counters = [{
-                    id: 'partner-schools',
-                    targetNumber: 21
-                },
-                {
-                    id: 'students-impacted',
-                    targetNumber: 1800
-                },
-                {
-                    id: 'alumni',
-                    targetNumber: 1500
-                }
-            ];
-    
-            const startCounter = (counterElement, targetNumber) => {
+            const startCounter = (counterElement, targetNumber, suffix) => {
                 let currentNumber = 0;
+                if (targetNumber <= 0) {
+                    counterElement.textContent = `${targetNumber}${suffix}`;
+                    return;
+                }
                 const increment = () => {
                     if (currentNumber < targetNumber) {
                         currentNumber++;
-                        counterElement.textContent = `${currentNumber}+`;
+                        counterElement.textContent = `${currentNumber}${suffix}`;
                     } else {
                         clearInterval(counterInterval);
                     }
                 };
-                const counterInterval = setInterval(increment, 2000 /
-                    targetNumber); // Adjust the speed as needed
+                const counterInterval = setInterval(increment, 2000 / targetNumber);
             };
-    
+
             const observer = new IntersectionObserver(entries => {
                 entries.forEach(entry => {
                     if (entry.isIntersecting) {
                         const counterElement = entry.target;
-                        const counterData = counters.find(c => c.id === counterElement.id);
-                        if (counterData) {
-                            startCounter(counterElement, counterData.targetNumber);
-                            observer.unobserve(
-                                counterElement); // Stop observing after the counter starts
-                        }
+                        const targetNumber = parseInt(counterElement.dataset.target || '0', 10);
+                        const suffix = counterElement.dataset.suffix || '+';
+                        startCounter(counterElement, targetNumber, suffix);
+                        observer.unobserve(counterElement);
                     }
                 });
             });
-    
-            counters.forEach(counter => {
-                const counterElement = document.getElementById(counter.id);
-                if (counterElement) {
-                    observer.observe(counterElement);
-                }
+
+            document.querySelectorAll('.counter[data-target]').forEach(counterElement => {
+                observer.observe(counterElement);
             });
         });
     </script>
@@ -1284,19 +1708,28 @@
     
     <script>
         document.addEventListener('DOMContentLoaded', function() {
-            const scriptURL =
-                'https://script.google.com/macros/s/AKfycbxib7tdd2sHDSycQFjFjRzohOcHU0Ao9dmJIghkbcJD4l-Z0rgcD9PVAcb3DB8XY_6b4w/exec';
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
             const form = document.getElementById('subscribe');
             const msg = document.getElementById('msg');
-    
+
+            if (!form) return;
+
             form.addEventListener('submit', function(e) {
                 e.preventDefault();
                 msg.innerHTML = "Processing...";
-                fetch(scriptURL, {
+                fetch('{{ route('subscribe.store') }}', {
                         method: 'POST',
+                        headers: {
+                            'X-CSRF-TOKEN': csrfToken,
+                            'Accept': 'application/json',
+                        },
                         body: new FormData(form)
                     })
                     .then(response => {
+                        if (!response.ok) throw new Error('Request failed');
+                        return response.json();
+                    })
+                    .then(data => {
                         msg.innerHTML = "Success! You subscribed successfully.";
                         form.reset();
                     })
@@ -1307,9 +1740,87 @@
             });
         });
     </script>
-    
-    
-    
+
+    <script>
+        // Shared handler for every .contact-form on the page (contact page + footer).
+        document.addEventListener('DOMContentLoaded', function() {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+            document.querySelectorAll('.contact-form').forEach(function(form) {
+                const notify = form.parentElement.querySelector('.contact-form-notify');
+
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    if (notify) notify.innerHTML = "Processing...";
+
+                    const formData = new FormData(form);
+                    formData.append('source', form.dataset.source || 'contact_page');
+
+                    fetch('{{ route('contact.store') }}', {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json',
+                            },
+                            body: formData
+                        })
+                        .then(response => {
+                            if (!response.ok) throw new Error('Request failed');
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (notify) notify.innerHTML = "Success! Your message was received.";
+                            form.reset();
+                        })
+                        .catch(error => {
+                            if (notify) notify.innerHTML = "Error! Please try again.";
+                            console.error('Error!', error.message);
+                        });
+                });
+            });
+        });
+    </script>
+
+    <script>
+        // Event registration forms: same pattern as .contact-form, but each
+        // form posts to its own event-specific action URL.
+        document.addEventListener('DOMContentLoaded', function() {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+            document.querySelectorAll('.event-register-form').forEach(function(form) {
+                const notify = form.querySelector('.register-form-notify');
+
+                form.addEventListener('submit', function(e) {
+                    e.preventDefault();
+                    if (notify) notify.innerHTML = "Processing...";
+
+                    fetch(form.action, {
+                            method: 'POST',
+                            headers: {
+                                'X-CSRF-TOKEN': csrfToken,
+                                'Accept': 'application/json',
+                            },
+                            body: new FormData(form)
+                        })
+                        .then(response => {
+                            if (!response.ok) throw new Error('Request failed');
+                            return response.json();
+                        })
+                        .then(data => {
+                            if (notify) notify.innerHTML = "Success! Your registration was received.";
+                            form.reset();
+                        })
+                        .catch(error => {
+                            if (notify) notify.innerHTML = "Error! Please try again.";
+                            console.error('Error!', error.message);
+                        });
+                });
+            });
+        });
+    </script>
+
+
+
     <script>
         var slideIndex = 1;
         showSlides(slideIndex);
@@ -1347,28 +1858,74 @@
         document.addEventListener('DOMContentLoaded', function() {
 
             let slides = document.querySelectorAll('.slide1');
+            if (!slides.length) return;
+
+            const textSlides = document.querySelectorAll('.hero-text-slide');
+            const dotsContainer = document.querySelector('.hero-dots');
+            const prevBtn = document.querySelector('.hero-arrow-prev');
+            const nextBtn = document.querySelector('.hero-arrow-next');
 
             let currentIndex = 0;
+            let autoplayTimer = null;
 
             function showSlide(index) {
                 slides.forEach((slide, i) => {
-                    slide.classList.remove('active');
-                    if (i === index) {
-                        slide.classList.add('active');
-                    }
+                    slide.classList.toggle('active', i === index);
                 });
+                textSlides.forEach((slide, i) => {
+                    slide.classList.toggle('active', i === index);
+                });
+                if (dotsContainer) {
+                    dotsContainer.querySelectorAll('.hero-dot').forEach((dot, i) => {
+                        dot.classList.toggle('active', i === index);
+                    });
+                }
+                currentIndex = index;
             }
 
             function nextSlide() {
-                currentIndex = (currentIndex + 1) % slides.length;
-                showSlide(currentIndex);
+                showSlide((currentIndex + 1) % slides.length);
             }
 
-            // Show the first slide initially
-            showSlide(currentIndex);
+            function prevSlide() {
+                showSlide((currentIndex - 1 + slides.length) % slides.length);
+            }
 
-            // Set interval for automatic slide transition
-            setInterval(nextSlide, 5000); // Adjust the interval as needed
+            function restartAutoplay() {
+                clearInterval(autoplayTimer);
+                autoplayTimer = setInterval(nextSlide, 6000);
+            }
+
+            if (dotsContainer) {
+                slides.forEach((_, i) => {
+                    const dot = document.createElement('button');
+                    dot.type = 'button';
+                    dot.className = 'hero-dot' + (i === 0 ? ' active' : '');
+                    dot.setAttribute('aria-label', 'Go to slide ' + (i + 1));
+                    dot.addEventListener('click', function() {
+                        showSlide(i);
+                        restartAutoplay();
+                    });
+                    dotsContainer.appendChild(dot);
+                });
+            }
+
+            if (prevBtn) {
+                prevBtn.addEventListener('click', function() {
+                    prevSlide();
+                    restartAutoplay();
+                });
+            }
+
+            if (nextBtn) {
+                nextBtn.addEventListener('click', function() {
+                    nextSlide();
+                    restartAutoplay();
+                });
+            }
+
+            showSlide(0);
+            restartAutoplay();
         });
     </script>
         

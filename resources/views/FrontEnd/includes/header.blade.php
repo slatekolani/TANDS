@@ -14,51 +14,33 @@
             <li><a href="{{ route('about') }}">About</a></li>
             <li><a href="{{route('gallery')}}">Gallery</a></li>
             <li class="dropdown">
-                <a href="javascript:void(0)" class="dropbtn">Programs <i class="fas fa-caret-down"></i></a>
-                <div class="dropdown-content">
-                    <a href="">Quiz Challenge</a>
-                    <a href="">Debates</a>
-                    <a href="">Public Speaking</a>
-                    <a href="">Trainings</a>
-                </div>
-            </li>
-            <li class="dropdown">
                 <a href="javascript:void(0)" class="dropbtn">Events <i class="fas fa-caret-down"></i></a>
                 <div class="dropdown-content">
-                    <div class="sub-dropdown">
-                        <a href="javascript:void(0)" class="sub-dropbtn">EASDC <i class="fas fa-caret-right"></i></a>
-                        <div class="sub-dropdown-content">
-                            <a href="{{route('EASDC')}}">2024</a>
-                            <a href="{{route('EASDC2025')}}">2025</a>
+                    @forelse ($navEvents as $series => $seriesEvents)
+                        <div class="sub-dropdown">
+                            <a href="javascript:void(0)" class="sub-dropbtn">{{ $series ?: 'Other' }} <i class="fas fa-caret-right"></i></a>
+                            <div class="sub-dropdown-content">
+                                @foreach ($seriesEvents as $navEvent)
+                                    <a href="{{ $navEvent->url }}">{{ $navEvent->year ?: $navEvent->title }}</a>
+                                @endforeach
+                            </div>
                         </div>
-                    </div>
-                    <div class="sub-dropdown">
-                        <a href="javascript:void(0)" class="sub-dropbtn">TNDC <i class="fas fa-caret-right"></i></a>
-                        <div class="sub-dropdown-content">
-                            <a href="{{route('TNDC2025')}}">2025</a>
-                            <a href="{{route('TNDC2026')}}">2026</a>
-                        </div>
-                    </div>
-                    <div class="sub-dropdown">
-                        <a href="javascript:void(0)" class="sub-dropbtn">ADC <i class="fas fa-caret-right"></i></a>
-                        <div class="sub-dropdown-content">
-                            <a href="{{route('ADC')}}">2025</a>
-                            <a href="{{route('ADC2026')}}">2026</a>
-                        </div>
-                    </div>
-                    <div class="sub-dropdown">
-                        <a href="javascript:void(0)" class="sub-dropbtn">TISDC <i class="fas fa-caret-right"></i></a>
-                        <div class="sub-dropdown-content">
-                            <a href="{{route('TISDC2025')}}">2025</a>
-                        </div>
-                    </div>
+                    @empty
+                        <a href="{{ route('home') }}">No events yet</a>
+                    @endforelse
                 </div>
             </li>
             <li><a href="{{route('contactUs')}}">Contact Us</a></li>
         </ul>
     </nav>
-    
-    <button class="openbtn" onclick="openNav()">☰</button>
+
+    <div class="header-actions">
+        @auth
+            <a href="{{ route('admin.dashboard') }}" class="header-dashboard-btn"><i class="fas fa-gauge-high"></i> Dashboard</a>
+        @endauth
+        <a href="{{ route('home') }}#subscribe" class="header-subscribe-btn">Subscribe</a>
+        <button class="openbtn" onclick="openNav()">☰</button>
+    </div>
 </header>
 
 <!-- Sidepanel for smaller screens -->
@@ -69,52 +51,33 @@
         <li><a href="{{ route('about') }}">About</a></li>
         <li><a href="{{route('gallery')}}">Gallery</a></li>
         <li class="dropdown">
-            <a href="javascript:void(0)" class="dropbtn">Programs <i class="fas fa-caret-down"></i></a>
-            <div class="dropdown-content">
-                <a href="{{route('EASDC')}}">Quiz Challenge</a>
-                <a href="{{route('EASDC')}}">Debates</a>
-                <a href="{{route('EASDC')}}">Public Speaking</a>
-                <a href="{{route('EASDC')}}">Trainings</a>
-            </div>
-        </li>
-        <li class="dropdown">
             <a href="javascript:void(0)" class="dropbtn">Events <i class="fas fa-caret-down"></i></a>
             <div class="dropdown-content">
-                <div class="sub-dropdown">
-                    <a href="javascript:void(0)" class="sub-dropbtn">EASDC <i class="fas fa-caret-down"></i></a>
-                    <div class="sub-dropdown-content">
-                        <a href="{{route('EASDC')}}">2024</a>
-                        <a href="{{route('EASDC2025')}}">2025</a>
+                @forelse ($navEvents as $series => $seriesEvents)
+                    <div class="sub-dropdown">
+                        <a href="javascript:void(0)" class="sub-dropbtn">{{ $series ?: 'Other' }} <i class="fas fa-caret-down"></i></a>
+                        <div class="sub-dropdown-content">
+                            @foreach ($seriesEvents as $navEvent)
+                                <a href="{{ $navEvent->url }}">{{ $navEvent->year ?: $navEvent->title }}</a>
+                            @endforeach
+                        </div>
                     </div>
-                </div>
-                <div class="sub-dropdown">
-                    <a href="javascript:void(0)" class="sub-dropbtn">TNDC <i class="fas fa-caret-down"></i></a>
-                    <div class="sub-dropdown-content">
-                        <a href="{{route('TNDC2025')}}">2025</a>
-                        <a href="{{route('TNDC2026')}}">2026</a>
-                    </div>
-                </div>
-                <div class="sub-dropdown">
-                    <a href="javascript:void(0)" class="sub-dropbtn">ADC <i class="fas fa-caret-down"></i></a>
-                    <div class="sub-dropdown-content">
-                        <a href="{{route('ADC')}}">2025</a>
-                    </div>
-                </div>
-                <div class="sub-dropdown">
-                    <a href="javascript:void(0)" class="sub-dropbtn">TISDC <i class="fas fa-caret-down"></i></a>
-                    <div class="sub-dropdown-content">
-                        <a href="{{route('TISDC2025')}}">2025</a>
-                    </div>
-                </div>
+                @empty
+                    <a href="{{ route('home') }}">No events yet</a>
+                @endforelse
             </div>
         </li>
         <li><a href="{{route('contactUs')}}">Contact Us</a></li>
+        @auth
+            <li><a href="{{ route('admin.dashboard') }}"><i class="fas fa-gauge-high"></i> Dashboard</a></li>
+        @endauth
+        <li><a href="{{ route('home') }}#subscribe" class="sidepanel-subscribe-btn">Subscribe</a></li>
     </ul>
     <!-- Social Media Links -->
     <div class="social-links">
-        <a href="#"><i class="fab fa-instagram"></i></a>
-        <a href="#"><i class="fab fa-twitter"></i></a>
-        <a href="#"><i class="fab fa-facebook-f"></i></a>
+        <a href="{{ $socialInstagram }}" target="_blank"><i class="fab fa-instagram"></i></a>
+        <a href="{{ $socialTwitter }}" target="_blank"><i class="fab fa-twitter"></i></a>
+        <a href="{{ $socialFacebook }}" target="_blank"><i class="fab fa-facebook-f"></i></a>
     </div>
 </div>
 
@@ -137,16 +100,30 @@ body {
     width: 100%;
     height: 120px; /* Fixed height for consistency */
     z-index: 1000;
-    transition: transform 0.3s ease-in-out;
+    box-shadow: 0 0 0 rgba(15, 23, 42, 0);
+    transition: transform .45s cubic-bezier(.4, 0, .2, 1),
+                height .35s cubic-bezier(.4, 0, .2, 1),
+                box-shadow .35s ease;
 }
 
 .header.hide {
     transform: translateY(-100%);
 }
 
+/* Compact mode once the page has scrolled past the hero */
+.header.header-scrolled {
+    height: 78px;
+    box-shadow: 0 4px 24px rgba(15, 23, 42, .08);
+}
+
 /* Logo Styles */
 .logo {
     height: 250px;
+    transition: height .35s cubic-bezier(.4, 0, .2, 1);
+}
+
+.header-scrolled .logo {
+    height: 160px;
 }
 
 .logo img {
@@ -155,6 +132,13 @@ body {
 }
 
 /* Navigation Styles */
+.navigation {
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+}
+
 .navigation ul {
     list-style-type: none;
     display: flex;
@@ -247,6 +231,53 @@ body {
     margin-left: 5px;
 }
 
+/* Top-right actions */
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-left: auto;
+}
+
+.header-subscribe-btn {
+    display: inline-block;
+    font-family: 'Poppins', sans-serif;
+    font-size: .88rem;
+    font-weight: 500;
+    color: #fff;
+    background: #24263b;
+    padding: 9px 22px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background .2s ease;
+}
+
+.header-subscribe-btn:hover {
+    background: #03A3DE;
+    color: #fff;
+}
+
+.header-dashboard-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-family: 'Poppins', sans-serif;
+    font-size: .88rem;
+    font-weight: 500;
+    color: #24263b;
+    background: #fff;
+    border: 1px solid #24263b;
+    padding: 8px 18px;
+    border-radius: 6px;
+    text-decoration: none;
+    transition: background .2s ease, color .2s ease;
+}
+
+.header-dashboard-btn:hover {
+    background: #24263b;
+    color: #fff;
+}
+
 /* Mobile Menu Button */
 .openbtn {
     display: none;
@@ -328,6 +359,16 @@ body {
     display: block;
 }
 
+.sidepanel-subscribe-btn {
+    display: inline-block !important;
+    margin: 10px 15px 0 32px !important;
+    padding: 8px 20px !important;
+    background: #03A3DE;
+    color: #fff !important;
+    border-radius: 6px;
+    font-size: 16px !important;
+}
+
 .sidepanel .social-links {
     display: flex;
     justify-content: center;
@@ -353,6 +394,9 @@ body {
     .openbtn {
         display: block;
     }
+    .header-subscribe-btn, .header-dashboard-btn {
+        display: none;
+    }
 }
 </style>
 
@@ -371,27 +415,46 @@ document.addEventListener('click', function(event) {
     const sidepanel = document.getElementById("mySidepanel");
     const openbtn = document.querySelector('.openbtn');
     const header = document.getElementById('header');
-    
+
     if (!sidepanel.contains(event.target) && !openbtn.contains(event.target) && !header.contains(event.target)) {
         closeNav();
     }
 });
 
-// Header hide/show on scroll
-let lastScrollTop = 0;
-const header = document.getElementById('header');
+// Smart header: full-size and always visible near the top; once past the
+// hero it compacts and gains a shadow, tucking away on a deliberate scroll
+// down and reappearing (already compact) the moment you scroll back up.
+(function() {
+    const header = document.getElementById('header');
+    const COMPACT_AT = 60;
+    const DIRECTION_THRESHOLD = 8;
 
-window.addEventListener('scroll', function() {
-    let scrollTop = window.pageYOffset || document.documentElement.scrollTop;
-    if (scrollTop > lastScrollTop) {
-        header.classList.remove('show');
-        header.classList.add('hide');
-    } else {
-        header.classList.remove('hide');
-        header.classList.add('show');
+    let lastScrollTop = 0;
+    let ticking = false;
+
+    function update() {
+        const scrollTop = Math.max(window.pageYOffset || document.documentElement.scrollTop, 0);
+
+        header.classList.toggle('header-scrolled', scrollTop > COMPACT_AT);
+
+        if (scrollTop <= COMPACT_AT) {
+            header.classList.remove('hide');
+            lastScrollTop = scrollTop;
+        } else if (Math.abs(scrollTop - lastScrollTop) > DIRECTION_THRESHOLD) {
+            header.classList.toggle('hide', scrollTop > lastScrollTop);
+            lastScrollTop = scrollTop;
+        }
+
+        ticking = false;
     }
-    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop;
-});
+
+    window.addEventListener('scroll', function() {
+        if (!ticking) {
+            window.requestAnimationFrame(update);
+            ticking = true;
+        }
+    }, { passive: true });
+})();
 
 // Dropdown toggle for mobile
 document.addEventListener('DOMContentLoaded', function() {

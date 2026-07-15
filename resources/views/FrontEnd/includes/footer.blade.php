@@ -1,28 +1,24 @@
 <section class="section8">
     <div class="container">
-        <div class="row">
-            <div class="col-md-4 mb-3">
-                <h3 style="color: white">Send us a message</h3>
-                <form id="messageToGoogleSheets">
-                    <div class="mb-3">
-                        <label for="fullNames" class="form-label" style="color: white">Full Names</label>
-                        <input type="text" class="form-control" name="fullNames" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="userEmail" class="form-label" style="color: white">Email Address</label>
-                        <input type="email" class="form-control" name="userEmail" aria-describedby="emailHelp" required>
-                        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="message" class="form-label" style="color: white">Message</label>
-                        <textarea class="form-control" name="message" rows="4" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i>Submit</button>
-                </form>
-                <span id="notify" style="color: white"></span>
+        <div class="row gy-5">
+            <div class="col-lg-3 col-md-6">
+                <div class="footer-brand">TANDS</div>
+                <p class="footer-tagline">Promoting fair, transparent and representative debate, public speaking and quiz excellence across Tanzania and East Africa.</p>
+                <div class="footer-social">
+                    <a href="{{ $socialInstagram }}" target="_blank" aria-label="Instagram">
+                        <i class="fab fa-instagram"></i>
+                    </a>
+                    <a href="{{ $socialTwitter }}" target="_blank" aria-label="Twitter">
+                        <i class="fab fa-twitter"></i>
+                    </a>
+                    <a href="{{ $socialFacebook }}" target="_blank" aria-label="Facebook">
+                        <i class="fab fa-facebook-f"></i>
+                    </a>
+                </div>
             </div>
-            <div class="col-md-4 mb-3">
-                <h3 class="usefulLinks" style="color: white">Useful Links</h3>
+
+            <div class="col-lg-3 col-md-6">
+                <h3 class="usefulLinks">Quick Links</h3>
                 <div class="footerLinks">
                     <a href="{{ route('home') }}">Home</a>
                     <a href="{{ route('about') }}">About</a>
@@ -30,58 +26,42 @@
                     <a href="{{route('contactUs')}}">Contact us</a>
                 </div>
             </div>
-            <div class="col-md-4 mb-3">
-                <h3 class="weAreSocial" style="color: white;text-align:center">We are Social</h3>
-                <div class="d-flex justify-content-center align-items-center"
-                    style="flex-direction: row; height: 100px; margin-top: 20px;">
-                    <a href='#'>
-                        <i class="fab fa-instagram" style="font-size: 30px;color:white;padding-right:20px"></i>
-                    </a>
-                    <a href='#'>
-                        <i class="fab fa-twitter" style="font-size: 30px;color:white;padding-right:20px"></i>
-                    </a>
-                    <a href='#'>
-                        <i class="fab fa-facebook-f" style="font-size: 30px;color:white;padding-right:20px"></i>
-                    </a>
-                </div>
+
+            <div class="col-lg-3 col-md-6">
+                <h3 class="usefulLinks">Get in Touch</h3>
+                <ul class="footer-contact-list">
+                    <li><i class="fas fa-map-marker-alt"></i> {{ $contactPoBox }}, {{ $contactAddress }}</li>
+                    <li><i class="fas fa-phone"></i> {{ $contactPhone }}</li>
+                    <li><i class="fas fa-envelope"></i> <a href="mailto:{{ $contactEmail }}">{{ $contactEmail }}</a></li>
+                </ul>
+            </div>
+
+            <div class="col-lg-3 col-md-6">
+                <h3>Send us a Message</h3>
+                <form id="footerContactForm" class="contact-form" data-source="footer">
+                    <div class="mb-3">
+                        <label for="footerFullNames" class="form-label footer-label">Full Names</label>
+                        <input type="text" id="footerFullNames" class="form-control footer-input" name="fullNames" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="footerUserEmail" class="form-label footer-label">Email Address</label>
+                        <input type="email" id="footerUserEmail" class="form-control footer-input" name="userEmail" required>
+                    </div>
+                    <div class="mb-3">
+                        <label for="footerMessage" class="form-label footer-label">Message</label>
+                        <textarea class="form-control footer-input" id="footerMessage" name="message" rows="3" required></textarea>
+                    </div>
+                    <button type="submit" class="btn footer-submit-btn"><i class="fas fa-paper-plane"></i> Submit</button>
+                    <span class="contact-form-notify footer-notify"></span>
+                </form>
             </div>
         </div>
     </div>
 </section>
-<section class="section9" style="margin-bottom: 60px">
-    <p style="text-align: center;font-size:18px">© Tanzania National Debate Society - <span id="year"></span>. Developed by <a href="#">XploSoftwares</a></p>
+<section class="footer-copyright">
+    <p>© Tanzania National Debate Society - <span id="year"></span>. Developed by <a href="https://nextbyte.co.tz/" target="_blank" rel="noopener">Nextbyte ICT Solutions</a></p>
 </section>
-
 
 <script>
     document.getElementById('year').textContent = new Date().getFullYear();
 </script>
-
-<script>
-
-document.addEventListener('DOMContentLoaded', function () {
-    const scriptURL = 'https://script.google.com/macros/s/AKfycbxN6HbEanlwHRW9pk0JWwO1WZEjg2aavOChBHLsajgKcdHtJQfq_VRw81F_z-tB6xPS/exec';
-    const form = document.getElementById('messageToGoogleSheets');
-    const msg = document.getElementById('notify');
-
-    form.addEventListener('submit', function (e) {
-        e.preventDefault();
-        msg.innerHTML = "Processing...";
-        fetch(scriptURL, {
-            method: 'POST',
-            body: new FormData(form)
-        })
-        .then(response => {
-            msg.innerHTML = "Success! Your message was received.";
-            form.reset();
-        })
-        .catch(error => {
-            msg.innerHTML = "Error! Please try again.";
-            console.error('Error!', error.message);
-        });
-    });
-});
-</script>
-
-
-

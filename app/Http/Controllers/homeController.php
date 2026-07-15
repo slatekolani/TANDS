@@ -2,13 +2,21 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\GalleryImage;
+use App\Models\HeroSlide;
+use App\Models\Setting;
 use Illuminate\Http\Request;
 
 class homeController extends Controller
 {
     public function home()
     {
-        return view('FrontEnd.welcome');
+        $heroSlides = HeroSlide::active()->orderBy('sort_order')->get();
+        $homeGalleryImages = GalleryImage::where('is_featured_home', true)->orderBy('sort_order')->get();
+        $homeAboutIntro = Setting::get('about_intro', '<b>Tanzania National Debate Society (TANDS)</b> is a fully registered society in accordance to the Societies Act Cap. 337 R.E of 2002 under registration number S.A 21806 with a mission of providing a platform for educational institutions to engage in fair, transparent and representative debating competitions so as to be able to participate in our Annual Debating Championships.');
+        $aboutImage = GalleryImage::inRandomOrder()->first();
+
+        return view('FrontEnd.welcome', compact('heroSlides', 'homeGalleryImages', 'homeAboutIntro', 'aboutImage'));
     }
 
     public function about()
@@ -18,42 +26,18 @@ class homeController extends Controller
 
     public function gallery()
     {
-        return view('FrontEnd.gallery');
-    }
-    public function EASDC()
-    {
-        return view('FrontEnd.Events.EASDC2024');
-    }
-      public function EASDC2025()
-    {
-        return view('FrontEnd.Events.EASDC2025');
-    }
-    public function ADC()
-    {
-        return view('FrontEnd.Events.ADC2025');
-    }
-    public function ADC2026()
-    {
-        return view('FrontEnd.Events.ADC2026');
-    }
-    public function TNDC2025()
-    {
-        return view('FrontEnd.Events.TNDC2025');
-    }
+        $galleryImages = GalleryImage::orderBy('sort_order')->get();
 
-    public function TNDC2026()
-    {
-        return view('FrontEnd.Events.TNDC2026');
+        return view('FrontEnd.gallery', compact('galleryImages'));
     }
 
     public function contactUs()
     {
-        return view('FrontEnd.contactUs');
+        $contactPhone = Setting::get('contact_phone', '+255 787 225 427');
+        $contactEmail = Setting::get('contact_email', 'info@tands.or.tz');
+        $contactAddress = Setting::get('contact_address', 'Arusha-Tanzania');
+        $contactPoBox = Setting::get('contact_po_box', 'P.O.BOX 6221');
+
+        return view('FrontEnd.contactUs', compact('contactPhone', 'contactEmail', 'contactAddress', 'contactPoBox'));
     }
-    
-    public function TISDC2025()
-    {
-        return view('FrontEnd.Events.TISDC2025');
-    }
-    
 }

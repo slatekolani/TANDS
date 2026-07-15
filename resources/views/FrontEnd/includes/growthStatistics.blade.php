@@ -5,45 +5,21 @@
         <div class="card">
             <div class="card-body">
                 <div class="row">
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-center align-items-center" style="flex-direction: column">
-                                    <i class="fas fa-school icon-large" style="color: darkred;"></i>
-                                    <p class="pheader2">Partner Schools</p>
-                                    <div class="content">
-                                        <div class="counter" id="partner-schools">0+</div>
+                    @foreach ($growthStats as $stat)
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-body">
+                                    <div class="d-flex justify-content-center align-items-center" style="flex-direction: column">
+                                        <i class="{{ $stat->icon_class }} icon-large" style="color: darkred;"></i>
+                                        <p class="pheader2">{{ $stat->label }}</p>
+                                        <div class="content">
+                                            <div class="counter" data-target="{{ $stat->value }}" data-suffix="{{ $stat->suffix }}">0{{ $stat->suffix }}</div>
+                                        </div>
                                     </div>
                                 </div>
                             </div>
                         </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-center align-items-center" style="flex-direction: column">
-                                    <i class="fas fa-user-graduate icon-large" style="color: darkgreen;"></i>
-                                    <p class="pheader2">Students Impacted</p>
-                                    <div class="content">
-                                        <div class="counter" id="students-impacted">0+</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                    <div class="col-md-4">
-                        <div class="card">
-                            <div class="card-body">
-                                <div class="d-flex justify-content-center align-items-center" style="flex-direction: column">
-                                    <i class="fas fa-user icon-large" style="color: navy;"></i>
-                                    <p class="pheader2">Alumni Network</p>
-                                    <div class="content">
-                                        <div class="counter" id="alumni">0+</div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
+                    @endforeach
                 </div>
             </div>
         </div>

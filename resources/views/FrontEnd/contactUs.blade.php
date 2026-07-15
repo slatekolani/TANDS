@@ -4,7 +4,7 @@
 @section('canonical', 'https://www.tands.or.tz/contactUs')
 
 @section('head')
-    
+
 @endsection
 
 @section('content')
@@ -17,34 +17,34 @@
                 <div
                     style="flex-direction: column; margin-top: 20px;">
                     <address>Tanzania National Debate Society,</address>
-                    <address>P.O.BOX 6221,</address>
-                    <address>Arusha-Tanzania.</address>
-                    <address>+255 787 225 427</address>
-                    <address><a href="mailto:info@tands.or.tz" >info@tands.or.tz</a></address> 
+                    <address>{{ $contactPoBox }},</address>
+                    <address>{{ $contactAddress }}.</address>
+                    <address>{{ $contactPhone }}</address>
+                    <address><a href="mailto:{{ $contactEmail }}">{{ $contactEmail }}</a></address>
                 </div>
             </div>
             <div class="col-md-6 mb-3">
                 <h1>Get in Touch</h1>
-                <form id="messageToGoogleSheets">
+                <form id="contactPageForm" class="contact-form" data-source="contact_page">
                     <div class="mb-3">
-                        <label for="fullNames" class="form-label">Full Names</label>
-                        <input type="text" class="form-control" name="fullNames" required>
+                        <label for="pageFullNames" class="form-label">Full Names</label>
+                        <input type="text" id="pageFullNames" class="form-control" name="fullNames" required>
                     </div>
                     <div class="mb-3">
-                        <label for="userEmail" class="form-label" >Email Address</label>
-                        <input type="email" class="form-control" name="userEmail" aria-describedby="emailHelp" required>
-                        <div id="emailHelp" class="form-text">We'll never share your email with anyone else.</div>
+                        <label for="pageUserEmail" class="form-label">Email Address</label>
+                        <input type="email" id="pageUserEmail" class="form-control" name="userEmail" aria-describedby="pageEmailHelp" required>
+                        <div id="pageEmailHelp" class="form-text">We'll never share your email with anyone else.</div>
                     </div>
                     <div class="mb-3">
-                        <label for="message" class="form-label">Message</label>
-                        <textarea class="form-control" name="message" rows="4" required></textarea>
+                        <label for="pageMessage" class="form-label">Message</label>
+                        <textarea class="form-control" id="pageMessage" name="message" rows="4" required></textarea>
                     </div>
                     <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i>Submit</button>
                 </form>
-                <span id="notify"></span>
+                <span class="contact-form-notify"></span>
             </div>
-    
-           
+
+
         </div>
     </div>
 </section>
