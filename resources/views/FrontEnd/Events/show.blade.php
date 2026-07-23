@@ -10,6 +10,7 @@
     <style>
         .landing-page {
             min-height: 60vh;
+            margin-top: 40px;
             background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ $event->banner_image ? asset($event->banner_image) : asset('/Images/EAC.jpg') }}') no-repeat center center;
             background-size: cover;
             display: flex;
