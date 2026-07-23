@@ -1783,15 +1783,72 @@
 
     <script>
         // Event registration forms: same pattern as .contact-form, but each
-        // form posts to its own event-specific action URL.
+        // form posts to its own event-specific action URL, and both native
+        // constraint-validation failures and Laravel's per-field validation
+        // errors are surfaced next to the offending field (not just as a
+        // single generic message), with aria-invalid/aria-describedby kept
+        // in sync so screen readers announce which field is wrong and why.
         document.addEventListener('DOMContentLoaded', function() {
             const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+
+            function fieldErrorEl(field) {
+                const describedBy = field.getAttribute('aria-describedby');
+                return describedBy ? document.getElementById(describedBy) : null;
+            }
+
+            function clearFieldErrors(form) {
+                form.querySelectorAll('.is-invalid').forEach(function(field) {
+                    field.classList.remove('is-invalid');
+                    field.setAttribute('aria-invalid', 'false');
+                    const errorEl = fieldErrorEl(field);
+                    if (errorEl) errorEl.textContent = '';
+                });
+            }
+
+            function showFieldError(form, fieldName, message) {
+                const field = form.querySelector('[name="' + fieldName + '"]');
+                if (!field) return null;
+                field.classList.add('is-invalid');
+                field.setAttribute('aria-invalid', 'true');
+                const errorEl = fieldErrorEl(field);
+                if (errorEl) errorEl.textContent = message;
+                return field;
+            }
 
             document.querySelectorAll('.event-register-form').forEach(function(form) {
                 const notify = form.querySelector('.register-form-notify');
 
+                // Suppress the browser's native validation tooltip so every
+                // failure (client- or server-side) renders through the same
+                // accessible .invalid-feedback + aria-invalid path.
+                form.querySelectorAll('[required], input, select, textarea').forEach(function(field) {
+                    field.addEventListener('invalid', function(e) {
+                        e.preventDefault();
+                        showFieldError(form, field.name, field.validationMessage);
+                    });
+                    ['input', 'change'].forEach(function(eventName) {
+                        field.addEventListener(eventName, function() {
+                            if (field.classList.contains('is-invalid')) {
+                                field.classList.remove('is-invalid');
+                                field.setAttribute('aria-invalid', 'false');
+                                const errorEl = fieldErrorEl(field);
+                                if (errorEl) errorEl.textContent = '';
+                            }
+                        });
+                    });
+                });
+
                 form.addEventListener('submit', function(e) {
                     e.preventDefault();
+                    clearFieldErrors(form);
+
+                    if (!form.checkValidity()) {
+                        const firstInvalid = form.querySelector('.is-invalid');
+                        if (firstInvalid) firstInvalid.focus();
+                        if (notify) notify.innerHTML = "Please fix the highlighted fields.";
+                        return;
+                    }
+
                     if (notify) notify.innerHTML = "Processing...";
 
                     fetch(form.action, {
@@ -1802,15 +1859,33 @@
                             },
                             body: new FormData(form)
                         })
-                        .then(response => {
-                            if (!response.ok) throw new Error('Request failed');
-                            return response.json();
+                        .then(function(response) {
+                            return response.json()
+                                .catch(function() { return {}; })
+                                .then(function(data) { return { status: response.status, ok: response.ok, data: data }; });
                         })
-                        .then(data => {
-                            if (notify) notify.innerHTML = "Success! Your registration was received.";
-                            form.reset();
+                        .then(function(result) {
+                            if (result.ok) {
+                                if (notify) notify.innerHTML = "Success! Your registration was received.";
+                                form.reset();
+                                return;
+                            }
+
+                            if (result.status === 422 && result.data.errors) {
+                                let firstInvalid = null;
+                                Object.keys(result.data.errors).forEach(function(fieldName) {
+                                    const messages = result.data.errors[fieldName];
+                                    const field = showFieldError(form, fieldName, Array.isArray(messages) ? messages[0] : messages);
+                                    if (field && !firstInvalid) firstInvalid = field;
+                                });
+                                if (firstInvalid) firstInvalid.focus();
+                                if (notify) notify.innerHTML = result.data.message || "Please fix the highlighted fields.";
+                                return;
+                            }
+
+                            if (notify) notify.innerHTML = result.data.message || "Error! Please try again.";
                         })
-                        .catch(error => {
+                        .catch(function(error) {
                             if (notify) notify.innerHTML = "Error! Please try again.";
                             console.error('Error!', error.message);
                         });

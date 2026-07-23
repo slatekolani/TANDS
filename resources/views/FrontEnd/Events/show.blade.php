@@ -66,19 +66,6 @@
             margin-bottom: 30px;
         }
 
-        .upcoming-badge {
-            display: inline-block;
-            background-color: #ffc107;
-            color: #333;
-            font-weight: bold;
-            padding: 6px 18px;
-            border-radius: 20px;
-            font-size: 1rem;
-            margin-bottom: 20px;
-            letter-spacing: 1px;
-            text-transform: uppercase;
-        }
-
         .gallery-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
@@ -192,11 +179,6 @@
 @section('content')
     <section class="landing-page">
         <div class="landing-content">
-            @if ($event->status === 'upcoming')
-                <span class="upcoming-badge">Upcoming Event</span>
-            @elseif ($event->status === 'ongoing')
-                <span class="upcoming-badge">Happening Now</span>
-            @endif
             <h2>{{ $event->title }}</h2>
             @if ($event->theme)
                 <p>Theme: {{ $event->theme }}</p>
@@ -262,67 +244,76 @@
                 <div class="register-card">
                     <h3 class="section-title" style="margin-bottom:6px">Register for this Event</h3>
                     <p class="text-center text-muted mb-4">Secure your spot — fill in your details below.</p>
-                    <form class="event-register-form" action="{{ route('event.register', $event) }}">
+                    <form class="event-register-form" action="{{ route('event.register', $event) }}" novalidate>
                         <div class="form-section-label">Contact Details</div>
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label">Full Name</label>
-                                <input type="text" name="name" class="form-control" required>
+                                <label class="form-label" for="reg-name-{{ $event->id }}">Full Name</label>
+                                <input type="text" id="reg-name-{{ $event->id }}" name="name" class="form-control" required aria-describedby="reg-name-{{ $event->id }}-error" aria-invalid="false">
+                                <div class="invalid-feedback" id="reg-name-{{ $event->id }}-error" role="alert"></div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Email Address</label>
-                                <input type="email" name="email" class="form-control" required>
+                                <label class="form-label" for="reg-email-{{ $event->id }}">Email Address</label>
+                                <input type="email" id="reg-email-{{ $event->id }}" name="email" class="form-control" required aria-describedby="reg-email-{{ $event->id }}-error" aria-invalid="false">
+                                <div class="invalid-feedback" id="reg-email-{{ $event->id }}-error" role="alert"></div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Phone Number</label>
-                                <input type="tel" name="phone" class="form-control" required>
+                                <label class="form-label" for="reg-phone-{{ $event->id }}">Phone Number</label>
+                                <input type="tel" id="reg-phone-{{ $event->id }}" name="phone" class="form-control" required aria-describedby="reg-phone-{{ $event->id }}-error" aria-invalid="false">
+                                <div class="invalid-feedback" id="reg-phone-{{ $event->id }}-error" role="alert"></div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Gender</label>
-                                <select name="gender" class="form-select" required>
+                                <label class="form-label" for="reg-gender-{{ $event->id }}">Gender</label>
+                                <select id="reg-gender-{{ $event->id }}" name="gender" class="form-select" required aria-describedby="reg-gender-{{ $event->id }}-error" aria-invalid="false">
                                     <option value="" disabled selected>Select gender</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                     <option value="Other">Other</option>
                                 </select>
+                                <div class="invalid-feedback" id="reg-gender-{{ $event->id }}-error" role="alert"></div>
                             </div>
                         </div>
 
                         <div class="form-section-label">Participant Details</div>
                         <div class="row g-3">
                             <div class="col-md-4">
-                                <label class="form-label">Age</label>
-                                <input type="number" name="age" class="form-control" min="5" max="100" required>
+                                <label class="form-label" for="reg-age-{{ $event->id }}">Age</label>
+                                <input type="number" id="reg-age-{{ $event->id }}" name="age" class="form-control" min="5" max="100" required aria-describedby="reg-age-{{ $event->id }}-error" aria-invalid="false">
+                                <div class="invalid-feedback" id="reg-age-{{ $event->id }}-error" role="alert"></div>
                             </div>
                             <div class="col-md-8">
-                                <label class="form-label">School</label>
-                                <input type="text" name="school" class="form-control" required>
+                                <label class="form-label" for="reg-school-{{ $event->id }}">School</label>
+                                <input type="text" id="reg-school-{{ $event->id }}" name="school" class="form-control" required aria-describedby="reg-school-{{ $event->id }}-error" aria-invalid="false">
+                                <div class="invalid-feedback" id="reg-school-{{ $event->id }}-error" role="alert"></div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Category</label>
-                                <select name="category" class="form-select" required>
+                                <label class="form-label" for="reg-category-{{ $event->id }}">Category</label>
+                                <select id="reg-category-{{ $event->id }}" name="category" class="form-select" required aria-describedby="reg-category-{{ $event->id }}-error" aria-invalid="false">
                                     <option value="" disabled selected>Select category</option>
                                     @foreach (\App\Http\Controllers\EventRegistrationController::CATEGORIES as $category)
                                         <option value="{{ $category }}">{{ $category }}</option>
                                     @endforeach
                                 </select>
+                                <div class="invalid-feedback" id="reg-category-{{ $event->id }}-error" role="alert"></div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label">Amount Paid (TZS)</label>
-                                <input type="number" name="amount_paid" class="form-control" min="0" step="0.01" required>
+                                <label class="form-label" for="reg-amount_paid-{{ $event->id }}">Amount Paid (TZS)</label>
+                                <input type="number" id="reg-amount_paid-{{ $event->id }}" name="amount_paid" class="form-control" min="0" step="0.01" required aria-describedby="reg-amount_paid-{{ $event->id }}-error" aria-invalid="false">
+                                <div class="invalid-feedback" id="reg-amount_paid-{{ $event->id }}-error" role="alert"></div>
                             </div>
                         </div>
 
                         <div class="form-section-label">Anything Else?</div>
                         <div class="row g-3">
                             <div class="col-12">
-                                <label class="form-label">Message (optional)</label>
-                                <textarea name="message" class="form-control" rows="3"></textarea>
+                                <label class="form-label" for="reg-message-{{ $event->id }}">Message (optional)</label>
+                                <textarea id="reg-message-{{ $event->id }}" name="message" class="form-control" rows="3" aria-describedby="reg-message-{{ $event->id }}-error" aria-invalid="false"></textarea>
+                                <div class="invalid-feedback" id="reg-message-{{ $event->id }}-error" role="alert"></div>
                             </div>
                         </div>
 
                         <button type="submit" class="btn mt-4">Submit Registration</button>
-                        <span class="register-form-notify"></span>
+                        <span class="register-form-notify" role="alert" aria-live="polite"></span>
                     </form>
                 </div>
             </div>

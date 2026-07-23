@@ -1,5 +1,5 @@
-{{-- Expects: $name, $value, optional $label, optional $height (px) --}}
-@php $inputId = 'rich-input-' . str_replace(['[', ']'], '-', $name); @endphp
+{{-- Expects: $name, $value, optional $label, optional $height (px), optional $id (unique instance key when the same $name repeats on the page, e.g. one per looped section) --}}
+@php $inputId = 'rich-input-' . str_replace(['[', ']'], '-', $id ?? $name); @endphp
 <div>
     @isset($label)
         <label class="form-label">{{ $label }}</label>

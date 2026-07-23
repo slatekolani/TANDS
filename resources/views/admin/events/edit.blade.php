@@ -44,6 +44,7 @@
                     </div>
                     @include('admin.partials.rich-editor', [
                         'name' => 'body',
+                        'id' => 'section-' . $section->id . '-body',
                         'value' => $section->body,
                         'height' => 220,
                     ])
@@ -84,6 +85,7 @@
                 </div>
                 @include('admin.partials.rich-editor', [
                     'name' => 'body',
+                    'id' => 'section-new-body',
                     'value' => '',
                     'height' => 180,
                 ])
