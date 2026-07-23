@@ -2,7 +2,7 @@
     <div class="hero-slides">
         @forelse ($heroSlides as $index => $slide)
             <div class="slide1 {{ $index === 0 ? 'active' : '' }}">
-                <img src="{{ Storage::url($slide->image_path) }}" class="backgroundImage" alt="{{ $slide->caption ?? 'TANDS' }}">
+                <img src="{{ asset($slide->image_path) }}" class="backgroundImage" alt="{{ $slide->caption ?? 'TANDS' }}">
             </div>
         @empty
             <div class="slide1 active">
@@ -57,7 +57,7 @@
             </div>
 
             <div class="col-md-6" style="margin-top: 50px; position: relative; align-self: flex-start;">
-                <img src="{{ $aboutImage ? Storage::url($aboutImage->image_path) : asset('/Images/batch3/YZVS7880.JPG') }}" class="otherImages"
+                <img src="{{ $aboutImage ? asset($aboutImage->image_path) : asset('/Images/batch3/YZVS7880.JPG') }}" class="otherImages"
                     style="width: 100%; height: auto;filter:contrast(140%)" alt="{{ $aboutImage->title ?? 'A team of Tanzania national debate society' }}">
                 <div class="image-text">
                     <span class="stat-badge-overlay">6+ Years</span>
@@ -84,8 +84,8 @@
                             <div class="gallery-item">
                                 <a data-fancybox="gallery"
                                     data-caption="{{ $image->title }}, {{ $image->caption }}"
-                                    href="{{ Storage::url($image->image_path) }}">
-                                    <img src="{{ Storage::url($image->image_path) }}" loading="lazy" alt="{{ $image->title }}"
+                                    href="{{ asset($image->image_path) }}">
+                                    <img src="{{ asset($image->image_path) }}" loading="lazy" alt="{{ $image->title }}"
                                         style="filter: contrast(140%)">
                                     <div class="card-img-overlay">
                                         <p class="card-text card-text-white"

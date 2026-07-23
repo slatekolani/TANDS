@@ -11,7 +11,7 @@
     @forelse ($slides as $slide)
         <div class="col-md-4">
             <div class="card shadow-sm h-100">
-                <img src="{{ Storage::url($slide->image_path) }}" class="card-img-top" style="height:160px;object-fit:cover">
+                <img src="{{ asset($slide->image_path) }}" class="card-img-top" style="height:160px;object-fit:cover">
                 <div class="card-body">
                     <div class="fw-semibold">{{ $slide->caption }}</div>
                     <div class="small text-muted">{{ $slide->description }}</div>

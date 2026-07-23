@@ -9,7 +9,7 @@
                         <div class="row d-flex justify-content-center align-items-center" style="flex-direction: row">
                             <div class="col-md-3 text-center">
                                 @if ($partner->logo_path)
-                                    <img src="{{ Storage::url($partner->logo_path) }}" class="partner-logo" alt="{{ $partner->name }} Logo">
+                                    <img src="{{ asset($partner->logo_path) }}" class="partner-logo" alt="{{ $partner->name }} Logo">
                                 @endif
                             </div>
                             <div class="col-md-9">

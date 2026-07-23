@@ -10,8 +10,8 @@
                             <div class="gallery-item">
                                 <a data-fancybox="gallery"
                                    data-caption="{{ $image->title }}, {{ $image->caption }}"
-                                   href="{{ Storage::url($image->image_path) }}">
-                                    <img src="{{ Storage::url($image->image_path) }}" loading="lazy" alt="{{ $image->title }}" style="filter: contrast(140%)">
+                                   href="{{ asset($image->image_path) }}">
+                                    <img src="{{ asset($image->image_path) }}" loading="lazy" alt="{{ $image->title }}" style="filter: contrast(140%)">
                                     <div class="card-img-overlay">
                                         <p class="card-text card-text-white"
                                            style="font-size: 1.5rem; font-weight: bold; position: absolute; bottom: 0; left: 0; right: 0; padding: 1rem;">

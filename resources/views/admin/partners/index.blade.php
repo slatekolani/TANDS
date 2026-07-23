@@ -12,7 +12,7 @@
         <div class="col-md-4">
             <div class="card shadow-sm h-100">
                 @if ($partner->logo_path)
-                    <img src="{{ Storage::url($partner->logo_path) }}" class="card-img-top p-3" style="height:120px;object-fit:contain">
+                    <img src="{{ asset($partner->logo_path) }}" class="card-img-top p-3" style="height:120px;object-fit:contain">
                 @endif
                 <div class="card-body">
                     <div class="fw-semibold">{{ $partner->name }}</div>

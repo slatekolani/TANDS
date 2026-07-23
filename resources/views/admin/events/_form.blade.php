@@ -78,7 +78,7 @@
         <label class="form-label">Banner Image</label>
         <input type="file" name="banner_image" class="form-control" accept="image/*">
         @if (! empty($event->banner_image))
-            <img src="{{ Storage::url($event->banner_image) }}" style="height:70px;margin-top:8px;border-radius:4px">
+            <img src="{{ asset($event->banner_image) }}" style="height:70px;margin-top:8px;border-radius:4px">
         @endif
     </div>
     <div class="col-md-6 d-flex align-items-end">

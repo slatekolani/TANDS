@@ -50,7 +50,7 @@
                     <div class="row g-2 mt-2 align-items-center">
                         @if (! empty($section->image_path))
                             <div class="col-md-3">
-                                <img src="{{ Storage::url($section->image_path) }}" class="img-fluid rounded" style="height:80px;width:100%;object-fit:cover">
+                                <img src="{{ asset($section->image_path) }}" class="img-fluid rounded" style="height:80px;width:100%;object-fit:cover">
                             </div>
                             <div class="col-md-3 form-check">
                                 <input type="checkbox" name="remove_image" value="1" class="form-check-input" id="remove_image_{{ $section->id }}">
@@ -104,7 +104,7 @@
             @forelse ($event->galleryImages as $image)
                 <div class="col-md-3">
                     <div class="border rounded p-2">
-                        <img src="{{ Storage::url($image->image_path) }}" class="img-fluid rounded mb-2" style="height:120px;width:100%;object-fit:cover">
+                        <img src="{{ asset($image->image_path) }}" class="img-fluid rounded mb-2" style="height:120px;width:100%;object-fit:cover">
                         <form method="POST" action="{{ route('admin.events.gallery.update', [$event, $image]) }}" enctype="multipart/form-data" class="mb-2">
                             @csrf
                             @method('PUT')

@@ -40,15 +40,15 @@
                         <div class="carousel-inner">
                             @if ($activity->image_path_1)
                                 <div class="carousel-item active">
-                                    <a data-fancybox="gallery" data-caption="{{ $activity->title }}" href="{{ Storage::url($activity->image_path_1) }}">
-                                        <img src="{{ Storage::url($activity->image_path_1) }}" loading="lazy" alt="{{ $activity->title }}" style="filter: contrast(140%)">
+                                    <a data-fancybox="gallery" data-caption="{{ $activity->title }}" href="{{ asset($activity->image_path_1) }}">
+                                        <img src="{{ asset($activity->image_path_1) }}" loading="lazy" alt="{{ $activity->title }}" style="filter: contrast(140%)">
                                     </a>
                                 </div>
                             @endif
                             @if ($activity->image_path_2)
                                 <div class="carousel-item {{ $activity->image_path_1 ? '' : 'active' }}">
-                                    <a data-fancybox="gallery" data-caption="{{ $activity->title }}" href="{{ Storage::url($activity->image_path_2) }}">
-                                        <img src="{{ Storage::url($activity->image_path_2) }}" loading="lazy" alt="{{ $activity->title }}" style="filter: contrast(140%)">
+                                    <a data-fancybox="gallery" data-caption="{{ $activity->title }}" href="{{ asset($activity->image_path_2) }}">
+                                        <img src="{{ asset($activity->image_path_2) }}" loading="lazy" alt="{{ $activity->title }}" style="filter: contrast(140%)">
                                     </a>
                                 </div>
                             @endif

@@ -3,7 +3,7 @@
     <input type="file" name="logo" class="form-control" accept="image/*">
     @isset($partner)
         @if ($partner->logo_path)
-            <img src="{{ Storage::url($partner->logo_path) }}" style="height:60px;margin-top:8px">
+            <img src="{{ asset($partner->logo_path) }}" style="height:60px;margin-top:8px">
         @endif
     @endisset
 </div>

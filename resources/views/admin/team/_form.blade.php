@@ -3,7 +3,7 @@
     <input type="file" name="photo" class="form-control" accept="image/*">
     @isset($member)
         @if ($member->photo_path)
-            <img src="{{ Storage::url($member->photo_path) }}" style="height:80px;margin-top:8px;border-radius:50%">
+            <img src="{{ asset($member->photo_path) }}" style="height:80px;margin-top:8px;border-radius:50%">
         @endif
     @endisset
 </div>

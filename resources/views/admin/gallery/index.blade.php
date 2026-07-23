@@ -11,7 +11,7 @@
     @forelse ($images as $image)
         <div class="col-md-3">
             <div class="card shadow-sm h-100">
-                <img src="{{ Storage::url($image->image_path) }}" class="card-img-top" style="height:150px;object-fit:cover">
+                <img src="{{ asset($image->image_path) }}" class="card-img-top" style="height:150px;object-fit:cover">
                 <div class="card-body">
                     <div class="fw-semibold">{{ $image->title ?: 'Untitled' }}</div>
                     <div class="small text-muted">{{ $image->caption }}</div>

@@ -12,7 +12,7 @@
         <input type="file" name="image_1" class="form-control" accept="image/*">
         @isset($activity)
             @if ($activity->image_path_1)
-                <img src="{{ Storage::url($activity->image_path_1) }}" style="height:60px;margin-top:8px">
+                <img src="{{ asset($activity->image_path_1) }}" style="height:60px;margin-top:8px">
             @endif
         @endisset
     </div>
@@ -21,7 +21,7 @@
         <input type="file" name="image_2" class="form-control" accept="image/*">
         @isset($activity)
             @if ($activity->image_path_2)
-                <img src="{{ Storage::url($activity->image_path_2) }}" style="height:60px;margin-top:8px">
+                <img src="{{ asset($activity->image_path_2) }}" style="height:60px;margin-top:8px">
             @endif
         @endisset
     </div>

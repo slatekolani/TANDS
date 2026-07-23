@@ -12,7 +12,7 @@
         <div class="col-md-4">
             <div class="card shadow-sm h-100">
                 @if ($member->photo_path)
-                    <img src="{{ Storage::url($member->photo_path) }}" class="card-img-top" style="height:180px;object-fit:cover">
+                    <img src="{{ asset($member->photo_path) }}" class="card-img-top" style="height:180px;object-fit:cover">
                 @endif
                 <div class="card-body">
                     <div class="fw-semibold">{{ $member->name }}</div>

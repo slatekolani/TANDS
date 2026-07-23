@@ -10,7 +10,7 @@
     <style>
         .landing-page {
             min-height: 60vh;
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ $event->banner_image ? Storage::url($event->banner_image) : asset('/Images/EAC.jpg') }}') no-repeat center center;
+            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ $event->banner_image ? asset($event->banner_image) : asset('/Images/EAC.jpg') }}') no-repeat center center;
             background-size: cover;
             display: flex;
             align-items: center;
@@ -232,7 +232,7 @@
                 <div class="gallery-grid">
                     @foreach ($event->galleryImages as $image)
                         <div class="gallery-item">
-                            <img src="{{ Storage::url($image->image_path) }}" alt="{{ $image->caption }}" class="gallery-image">
+                            <img src="{{ asset($image->image_path) }}" alt="{{ $image->caption }}" class="gallery-image">
                             @if ($image->caption)
                                 <div class="gallery-overlay">{{ $image->caption }}</div>
                             @endif
@@ -249,7 +249,7 @@
                 <h3 class="section-title">{{ $section->title }}</h3>
                 <hr class="section-divider">
                 @if (! empty($section->image_path))
-                    <img src="{{ Storage::url($section->image_path) }}" alt="{{ $section->title }}" class="section-image">
+                    <img src="{{ asset($section->image_path) }}" alt="{{ $section->title }}" class="section-image">
                 @endif
                 {!! $section->body !!}
             </div>

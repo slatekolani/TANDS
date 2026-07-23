@@ -2,7 +2,7 @@
     <label class="form-label">Image {{ isset($image) ? '(leave blank to keep current)' : '' }}</label>
     <input type="file" name="image" class="form-control" accept="image/*" @if(!isset($image)) required @endif>
     @isset($image)
-        <img src="{{ Storage::url($image->image_path) }}" style="height:80px;margin-top:8px;border-radius:4px">
+        <img src="{{ asset($image->image_path) }}" style="height:80px;margin-top:8px;border-radius:4px">
     @endisset
 </div>
 <div class="mb-3">

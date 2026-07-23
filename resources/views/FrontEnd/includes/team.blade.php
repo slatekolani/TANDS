@@ -29,7 +29,7 @@
                                 <div class="card-body" style="text-align: center">
                                     <div class="d-flex justify-content-center align-items-center" style="flex-direction: column">
                                         @if ($member->photo_path)
-                                            <img src="{{ Storage::url($member->photo_path) }}"
+                                            <img src="{{ asset($member->photo_path) }}"
                                                 style="border-radius: 50%; width: 200px; height: 200px; object-fit: contain;filter:contrast(140%)" alt="{{ $member->name }}">
                                         @endif
                                         <p class="pheader2">{{ $member->name }}</p>
@@ -54,7 +54,7 @@
                         </div>
                         <div class="modal-body">
                             @if ($member->photo_path)
-                                <img src="{{ Storage::url($member->photo_path) }}" class="img-fluid mb-3" style="filter:contrast(140%)" alt="{{ $member->name }}">
+                                <img src="{{ asset($member->photo_path) }}" class="img-fluid mb-3" style="filter:contrast(140%)" alt="{{ $member->name }}">
                             @endif
                             <p style="color:dodgerblue">{{ $member->role_title }}</p>
                             <p>{{ $member->bio }}</p>
