@@ -54,6 +54,10 @@ return [
 
     'url' => env('APP_URL', 'http://localhost'),
 
+    // Public, canonical address of the site — used for canonical tags and
+    // the auto-generated sitemap (APP_URL is only http://tands.or.tz).
+    'site_url' => rtrim(env('SITE_URL', 'https://www.tands.or.tz'), '/'),
+
     'asset_url' => env('ASSET_URL', null),
 
     /*

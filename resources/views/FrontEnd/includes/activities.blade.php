@@ -1,69 +1,39 @@
-<style>
-    .carousel-item {
-        position: relative;
-        overflow: hidden;
-        height: 100%;
-    }
-
-    .carousel-item img {
-        width: 100%;
-        height: 100%;
-        min-height: 60vh;
-        object-fit: cover;
-        filter: contrast(1.2);
-        transition: transform 0.5s ease-in-out;
-    }
-
-    .carousel-item:hover img {
-        transform: scale(1.1);
-    }
-
-    .programDescription {
-        margin-top: 40px;
-    }
-
-    @media (max-width: 578px) {
-        .programDescription {
-            margin-top: 40;
-        }
-    }
-</style>
-<section class="section4">
-    <div class="col-md-12" style="margin-top: 50px">
-        <h3>ACTIVITIES</h3>
-        <p class="pheader">Our Mission is best served by these activities</p>
-
-        @foreach ($activities as $index => $activity)
-            <div class="row" style="margin-top: 10px">
-                <div class="col-md-6 {{ $loop->odd ? 'order-md-1' : 'order-md-2' }}" style="position: relative;">
-                    <div id="activityCarousel{{ $index }}" class="carousel slide" data-bs-ride="carousel">
-                        <div class="carousel-inner">
-                            @if ($activity->image_path_1)
-                                <div class="carousel-item active">
-                                    <a data-fancybox="gallery" data-caption="{{ $activity->title }}" href="{{ asset($activity->image_path_1) }}">
-                                        <img src="{{ asset($activity->image_path_1) }}" loading="lazy" alt="{{ $activity->title }}" style="filter: contrast(140%)">
-                                    </a>
+@if ($activities->isNotEmpty())
+    <section class="section">
+        <div class="wrap">
+            <x-section-head eyebrow="Activities" title="Our mission is best served by these activities" />
+            @foreach ($activities as $index => $activity)
+                @php $images = array_values(array_filter([$activity->image_path_1, $activity->image_path_2])); @endphp
+                <div class="split activity">
+                    <div class="activity__media">
+                        @if (count($images))
+                            <div id="activityCarousel{{ $index }}" class="carousel slide" data-bs-ride="carousel" data-bs-interval="5000">
+                                <div class="carousel-inner">
+                                    @foreach ($images as $i => $path)
+                                        <div class="carousel-item {{ $i === 0 ? 'active' : '' }}">
+                                            <a href="{{ asset($path) }}" data-fancybox="activity-{{ $index }}" data-caption="{{ Str::title($activity->title) }}">
+                                                <img src="{{ asset($path) }}" alt="{{ Str::title($activity->title) }}">
+                                            </a>
+                                        </div>
+                                    @endforeach
                                 </div>
-                            @endif
-                            @if ($activity->image_path_2)
-                                <div class="carousel-item {{ $activity->image_path_1 ? '' : 'active' }}">
-                                    <a data-fancybox="gallery" data-caption="{{ $activity->title }}" href="{{ asset($activity->image_path_2) }}">
-                                        <img src="{{ asset($activity->image_path_2) }}" loading="lazy" alt="{{ $activity->title }}" style="filter: contrast(140%)">
-                                    </a>
-                                </div>
-                            @endif
-                        </div>
-                        <ol class="carousel-indicators">
-                            <li data-bs-target="#activityCarousel{{ $index }}" data-bs-slide-to="0" class="active"></li>
-                            <li data-bs-target="#activityCarousel{{ $index }}" data-bs-slide-to="1"></li>
-                        </ol>
+                                @if (count($images) > 1)
+                                    <div class="carousel-indicators">
+                                        @foreach ($images as $i => $path)
+                                            <button type="button" data-bs-target="#activityCarousel{{ $index }}" data-bs-slide-to="{{ $i }}" class="{{ $i === 0 ? 'active' : '' }}" aria-label="Photo {{ $i + 1 }}"></button>
+                                        @endforeach
+                                    </div>
+                                @endif
+                            </div>
+                        @endif
+                    </div>
+                    <div>
+                        <span class="eyebrow">Activity {{ str_pad($loop->iteration, 2, '0', STR_PAD_LEFT) }}</span>
+                        <h3>{{ Str::title($activity->title) }}</h3>
+                        <div class="prose">{!! nl2br(e($activity->description)) !!}</div>
                     </div>
                 </div>
-                <div class="col-md-6 programDescription {{ $loop->odd ? 'order-md-2' : 'order-md-1' }}">
-                    <h3>{{ $activity->title }}</h3>
-                    <p class="descriptionText">{{ $activity->description }}</p>
-                </div>
-            </div>
-        @endforeach
-    </div>
-</section>
+            @endforeach
+        </div>
+    </section>
+@endif

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\RunsAfterResponse;
 use App\Mail\ContactMessageConfirmation;
 use App\Mail\ContactMessageReceived;
 use App\Models\ContactMessage;
@@ -11,6 +12,8 @@ use Illuminate\Support\Facades\Mail;
 
 class ContactMessageController extends Controller
 {
+    use RunsAfterResponse;
+
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -20,6 +23,7 @@ class ContactMessageController extends Controller
             'source' => ['nullable', 'string', 'max:50'],
         ]);
 
+        // Saved first, so it is always on the dashboard even if email fails.
         $contactMessage = ContactMessage::create([
             'full_name' => $data['fullNames'],
             'email' => $data['userEmail'],
@@ -27,19 +31,19 @@ class ContactMessageController extends Controller
             'source' => $data['source'] ?? 'contact_page',
         ]);
 
-        try {
-            Mail::to($contactMessage->email)->send(new ContactMessageConfirmation($contactMessage));
-        } catch (\Throwable $e) {
-            Log::warning('Contact message confirmation email failed to send: ' . $e->getMessage());
-        }
+        return $this->respondThen(response()->json(['message' => 'Your message was received.']), function () use ($contactMessage) {
+            try {
+                Mail::to($contactMessage->email)->send(new ContactMessageConfirmation($contactMessage));
+            } catch (\Throwable $e) {
+                Log::warning('Contact message confirmation email failed to send: ' . $e->getMessage());
+            }
 
-        try {
-            Mail::to(config('mail.contact_recipient'))->send(new ContactMessageReceived($contactMessage));
-            $contactMessage->update(['email_sent' => true]);
-        } catch (\Throwable $e) {
-            Log::warning('Contact message admin notification email failed to send: ' . $e->getMessage());
-        }
-
-        return response()->json(['message' => 'Your message was received.']);
+            try {
+                Mail::to(config('mail.contact_recipient'))->send(new ContactMessageReceived($contactMessage));
+                $contactMessage->update(['email_sent' => true]);
+            } catch (\Throwable $e) {
+                Log::warning('Contact message admin notification email failed to send: ' . $e->getMessage());
+            }
+        });
     }
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Event;
 use App\Models\GalleryImage;
 use App\Models\HeroSlide;
 use App\Models\Setting;
@@ -15,8 +16,10 @@ class homeController extends Controller
         $homeGalleryImages = GalleryImage::where('is_featured_home', true)->orderBy('sort_order')->get();
         $homeAboutIntro = Setting::get('about_intro', '<b>Tanzania National Debate Society (TANDS)</b> is a fully registered society in accordance to the Societies Act Cap. 337 R.E of 2002 under registration number S.A 21806 with a mission of providing a platform for educational institutions to engage in fair, transparent and representative debating competitions so as to be able to participate in our Annual Debating Championships.');
         $aboutImage = GalleryImage::inRandomOrder()->first();
+        $featuredEvents = Event::latestPerSeries();
+        $upcomingEvent = $featuredEvents->firstWhere('status', 'upcoming');
 
-        return view('FrontEnd.welcome', compact('heroSlides', 'homeGalleryImages', 'homeAboutIntro', 'aboutImage'));
+        return view('FrontEnd.welcome', compact('heroSlides', 'homeGalleryImages', 'homeAboutIntro', 'aboutImage', 'featuredEvents', 'upcomingEvent'));
     }
 
     public function about()

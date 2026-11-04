@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\RunsAfterResponse;
 use App\Mail\EventRegistrationConfirmation;
 use App\Mail\EventRegistrationReceived;
 use App\Models\Event;
@@ -12,6 +13,8 @@ use Illuminate\Validation\Rule;
 
 class EventRegistrationController extends Controller
 {
+    use RunsAfterResponse;
+
     public const CATEGORIES = ['Poetry', 'Quiz', 'Public Speaking', 'Debate'];
 
     public function store(Request $request, Event $event)
@@ -32,18 +35,18 @@ class EventRegistrationController extends Controller
 
         $registration = $event->registrations()->create($data);
 
-        try {
-            Mail::to($registration->email)->send(new EventRegistrationConfirmation($registration));
-        } catch (\Throwable $e) {
-            Log::warning('Event registration confirmation email failed to send: ' . $e->getMessage());
-        }
+        return $this->respondThen(response()->json(['message' => 'Your registration was received.']), function () use ($registration) {
+            try {
+                Mail::to($registration->email)->send(new EventRegistrationConfirmation($registration));
+            } catch (\Throwable $e) {
+                Log::warning('Event registration confirmation email failed to send: ' . $e->getMessage());
+            }
 
-        try {
-            Mail::to(config('mail.contact_recipient'))->send(new EventRegistrationReceived($registration));
-        } catch (\Throwable $e) {
-            Log::warning('Event registration admin notification email failed to send: ' . $e->getMessage());
-        }
-
-        return response()->json(['message' => 'Your registration was received.']);
+            try {
+                Mail::to(config('mail.contact_recipient'))->send(new EventRegistrationReceived($registration));
+            } catch (\Throwable $e) {
+                Log::warning('Event registration admin notification email failed to send: ' . $e->getMessage());
+            }
+        });
     }
 }

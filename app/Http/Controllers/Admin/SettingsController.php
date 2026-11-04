@@ -10,7 +10,7 @@ class SettingsController extends Controller
 {
     public const KEYS = [
         'about_intro', 'about_mission', 'about_vision',
-        'contact_phone', 'contact_address', 'contact_po_box', 'contact_email',
+        'contact_phone', 'whatsapp_number', 'contact_address', 'contact_po_box', 'contact_email',
         'social_instagram_url', 'social_twitter_url', 'social_facebook_url',
     ];
 
@@ -31,6 +31,7 @@ class SettingsController extends Controller
             'about_mission' => ['nullable', 'string'],
             'about_vision' => ['nullable', 'string'],
             'contact_phone' => ['nullable', 'string', 'max:50'],
+            'whatsapp_number' => ['nullable', 'string', 'max:50'],
             'contact_address' => ['nullable', 'string', 'max:255'],
             'contact_po_box' => ['nullable', 'string', 'max:100'],
             'contact_email' => ['nullable', 'email', 'max:255'],

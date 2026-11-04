@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Admin;
 
 use App\Http\Controllers\Admin\Concerns\ManagesUploads;
+use App\Http\Controllers\Concerns\RunsAfterResponse;
 use App\Http\Controllers\Controller;
 use App\Mail\EventPublishedAnnouncement;
 use App\Models\Event;
@@ -14,7 +15,7 @@ use Illuminate\Validation\Rule;
 
 class EventController extends Controller
 {
-    use ManagesUploads;
+    use ManagesUploads, RunsAfterResponse;
 
     public function index()
     {
@@ -40,9 +41,10 @@ class EventController extends Controller
 
         $event = Event::create($data);
 
-        dispatch(fn () => $this->announceIfNeeded($event))->afterResponse();
-
-        return redirect()->route('admin.events.edit', $event)->with('status', 'Event created. Add sections and gallery images below.');
+        return $this->respondThen(
+            redirect()->route('admin.events.edit', $event)->with('status', 'Event created. Add sections and gallery images below.'),
+            fn () => $this->announceIfNeeded($event)
+        );
     }
 
     public function edit(Event $event)
@@ -64,9 +66,10 @@ class EventController extends Controller
 
         $event->update($data);
 
-        dispatch(fn () => $this->announceIfNeeded($event))->afterResponse();
-
-        return redirect()->route('admin.events.edit', $event)->with('status', 'Event updated.');
+        return $this->respondThen(
+            redirect()->route('admin.events.edit', $event)->with('status', 'Event updated.'),
+            fn () => $this->announceIfNeeded($event)
+        );
     }
 
     public function destroy(Event $event)

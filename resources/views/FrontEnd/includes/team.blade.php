@@ -1,75 +1,71 @@
-<style>
-    @media (max-width: 578px) {
-        .modal-dialog {
-            max-height: 90vh; /* Adjust as needed */
-            margin: 1.75rem auto; /* Center the modal */
-        }
-
-        .modal-content {
-            height: 100%; /* Ensure the content takes full height */
-        }
-
-        .modal-body {
-            max-height: 70vh;
-            overflow-y: auto;
-        }
-    }
-</style>
-
-<section class="section4">
-    <div class="col-md-12" style="margin-top: 50px">
-        <h3>TEAM</h3>
-        <p class="pheader">Two is better than One</p>
-        <div class="card">
-            <div class="card-body">
-                <div class="row">
-                    @foreach ($teamMembers as $index => $member)
-                        <div class="col-md-4">
-                            <div class="card" data-bs-toggle="modal" data-bs-target="#teamModal{{ $index }}" style="cursor: pointer">
-                                <div class="card-body" style="text-align: center">
-                                    <div class="d-flex justify-content-center align-items-center" style="flex-direction: column">
-                                        @if ($member->photo_path)
-                                            <img src="{{ asset($member->photo_path) }}"
-                                                style="border-radius: 50%; width: 200px; height: 200px; object-fit: contain;filter:contrast(140%)" alt="{{ $member->name }}">
-                                        @endif
-                                        <p class="pheader2">{{ $member->name }}</p>
-                                        <p>{{ $member->role_title }}</p>
-                                    </div>
-                                </div>
-                            </div>
+@if ($teamMembers->isNotEmpty())
+    <section class="section">
+        <div class="wrap">
+            <x-section-head eyebrow="Our team" title="The people behind TANDS">
+                Two is better than one — meet the team that runs our championships and programs.
+            </x-section-head>
+            <div class="grid grid--3">
+                @foreach ($teamMembers as $index => $member)
+                    <article class="card-x card-x--hover person">
+                        <div class="person__media">
+                            @if ($member->photo_path)
+                                <img class="person__photo" src="{{ asset($member->photo_path) }}" alt="{{ $member->name }}" loading="lazy">
+                            @else
+                                <div class="person__photo d-flex align-items-center justify-content-center"><span class="avatar">{{ collect(explode(' ', $member->name))->map(fn ($w) => mb_substr($w, 0, 1))->take(2)->implode('') }}</span></div>
+                            @endif
                         </div>
-                    @endforeach
-                </div>
+                        <div class="person__body">
+                            <h4>{{ $member->name }}</h4>
+                            <div class="person__role">{{ $member->role_title }}</div>
+                            @if ($member->bio)
+                                <button type="button" class="link-arrow person__more border-0 bg-transparent p-0 stretched-link"
+                                    data-bs-toggle="modal" data-bs-target="#teamModal{{ $index }}">Read bio <i class="fas fa-arrow-right" aria-hidden="true"></i></button>
+                            @endif
+                        </div>
+                    </article>
+                @endforeach
             </div>
         </div>
+    </section>
 
-        <!-- Modals -->
-        @foreach ($teamMembers as $index => $member)
-            <div class="modal fade" id="teamModal{{ $index }}" aria-hidden="true" aria-labelledby="teamModalLabel{{ $index }}" tabindex="-1">
-                <div class="modal-dialog modal-dialog-centered">
+    @foreach ($teamMembers as $index => $member)
+        @if ($member->bio)
+            <div class="modal fade" id="teamModal{{ $index }}" tabindex="-1" aria-labelledby="teamModalLabel{{ $index }}" aria-hidden="true">
+                <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
-                            <h3 class="modal-title" id="teamModalLabel{{ $index }}">{{ $member->name }}</h3>
+                            <h3 id="teamModalLabel{{ $index }}">{{ $member->name }}</h3>
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            @if ($member->photo_path)
-                                <img src="{{ asset($member->photo_path) }}" class="img-fluid mb-3" style="filter:contrast(140%)" alt="{{ $member->name }}">
-                            @endif
-                            <p style="color:dodgerblue">{{ $member->role_title }}</p>
-                            <p>{{ $member->bio }}</p>
+                            <div class="modal-bio">
+                                @if ($member->photo_path)
+                                    <img src="{{ asset($member->photo_path) }}" alt="{{ $member->name }}">
+                                @endif
+                                <div>
+                                    <span class="eyebrow">{{ $member->role_title }}</span>
+                                    <div class="prose">{!! nl2br(e($member->bio)) !!}</div>
+                                </div>
+                            </div>
                         </div>
-                        <div class="modal-footer">
-                            @if (! $loop->first)
-                                <button class="btn btn-primary" data-bs-target="#teamModal{{ $index - 1 }}" data-bs-toggle="modal" data-bs-dismiss="modal">Back</button>
-                            @endif
-                            @if (! $loop->last)
-                                <button class="btn btn-primary" data-bs-target="#teamModal{{ $index + 1 }}" data-bs-toggle="modal" data-bs-dismiss="modal">Next</button>
-                            @endif
-                        </div>
+                        @if ($teamMembers->count() > 1)
+                            <div class="modal-footer justify-content-between">
+                                @php $prev = $teamMembers->keys()->get($loop->index - 1); $next = $teamMembers->keys()->get($loop->index + 1); @endphp
+                                <span>
+                                    @if (! $loop->first)
+                                        <button class="btn-x btn-x--outline btn-x--sm" data-bs-target="#teamModal{{ $prev }}" data-bs-toggle="modal"><i class="fas fa-arrow-left" aria-hidden="true"></i> Previous</button>
+                                    @endif
+                                </span>
+                                <span>
+                                    @if (! $loop->last)
+                                        <button class="btn-x btn-x--primary btn-x--sm" data-bs-target="#teamModal{{ $next }}" data-bs-toggle="modal">Next <i class="fas fa-arrow-right" aria-hidden="true"></i></button>
+                                    @endif
+                                </span>
+                            </div>
+                        @endif
                     </div>
                 </div>
             </div>
-        @endforeach
-    </div>
-</section>
+        @endif
+    @endforeach
+@endif

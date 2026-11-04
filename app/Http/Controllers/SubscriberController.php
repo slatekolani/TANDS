@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Controllers\Concerns\RunsAfterResponse;
 use App\Mail\SubscriberConfirmation;
 use App\Mail\SubscriberReceived;
 use App\Models\Subscriber;
@@ -11,6 +12,8 @@ use Illuminate\Support\Facades\Mail;
 
 class SubscriberController extends Controller
 {
+    use RunsAfterResponse;
+
     public function store(Request $request)
     {
         $data = $request->validate([
@@ -22,18 +25,18 @@ class SubscriberController extends Controller
             ['is_active' => true, 'subscribed_at' => now()]
         );
 
-        try {
-            Mail::to($subscriber->email)->send(new SubscriberConfirmation($subscriber));
-        } catch (\Throwable $e) {
-            Log::warning('Subscriber confirmation email failed to send: ' . $e->getMessage());
-        }
+        return $this->respondThen(response()->json(['message' => 'Subscribed successfully.']), function () use ($subscriber) {
+            try {
+                Mail::to($subscriber->email)->send(new SubscriberConfirmation($subscriber));
+            } catch (\Throwable $e) {
+                Log::warning('Subscriber confirmation email failed to send: ' . $e->getMessage());
+            }
 
-        try {
-            Mail::to(config('mail.contact_recipient'))->send(new SubscriberReceived($subscriber));
-        } catch (\Throwable $e) {
-            Log::warning('Subscriber admin notification email failed to send: ' . $e->getMessage());
-        }
-
-        return response()->json(['message' => 'Subscribed successfully.']);
+            try {
+                Mail::to(config('mail.contact_recipient'))->send(new SubscriberReceived($subscriber));
+            } catch (\Throwable $e) {
+                Log::warning('Subscriber admin notification email failed to send: ' . $e->getMessage());
+            }
+        });
     }
 }

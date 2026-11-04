@@ -22,6 +22,7 @@ use App\Http\Controllers\ContactMessageController;
 use App\Http\Controllers\EventController;
 use App\Http\Controllers\EventRegistrationController;
 use App\Http\Controllers\homeController;
+use App\Http\Controllers\SitemapController;
 use App\Http\Controllers\SubscriberController;
 use Illuminate\Support\Facades\Route;
 
@@ -32,6 +33,7 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/', [homeController::class, 'home']);
+Route::get('sitemap.xml', SitemapController::class)->name('sitemap');
 
 Route::get('home', [homeController::class, 'home'])->name('home');
 Route::get('about', [homeController::class, 'about'])->name('about');

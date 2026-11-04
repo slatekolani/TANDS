@@ -79,6 +79,8 @@ class AppServiceProvider extends ServiceProvider
                 'contactEmail' => Setting::get('contact_email', 'info@tands.or.tz'),
                 'contactAddress' => Setting::get('contact_address', 'Arusha-Tanzania'),
                 'contactPoBox' => Setting::get('contact_po_box', 'P.O.BOX 6221'),
+                'footerEvents' => Event::latestPerSeries(),
+                'whatsappNumber' => preg_replace('/\D+/', '', (string) (Setting::get('whatsapp_number') ?: Setting::get('contact_phone', '+255 787 225 427'))),
                 'socialInstagram' => Setting::get('social_instagram_url', '#'),
                 'socialTwitter' => Setting::get('social_twitter_url', '#'),
                 'socialFacebook' => Setting::get('social_facebook_url', '#'),

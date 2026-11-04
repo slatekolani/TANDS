@@ -43,6 +43,21 @@ class Event extends Model
     }
 
     /**
+     * The newest published edition of each series (e.g. TNDC 2026, EASDC
+     * 2025), upcoming editions first — what the homepage and footer show.
+     */
+    public static function latestPerSeries()
+    {
+        return static::published()
+            ->orderByDesc('year')
+            ->get()
+            ->groupBy(fn ($event) => $event->series ?: $event->slug)
+            ->map->first()
+            ->sortBy(fn ($event) => [$event->status === 'upcoming' ? 0 : ($event->status === 'ongoing' ? 1 : 2), -((int) $event->year)])
+            ->values();
+    }
+
+    /**
      * Registration is only open for events the admin has marked "upcoming" —
      * not yet ongoing/in-progress and not past.
      */

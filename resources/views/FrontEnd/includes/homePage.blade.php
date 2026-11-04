@@ -1,134 +1,133 @@
-<section class="hero-section">
-    <div class="hero-slides">
-        @forelse ($heroSlides as $index => $slide)
-            <div class="slide1 {{ $index === 0 ? 'active' : '' }}">
-                <img src="{{ asset($slide->image_path) }}" class="backgroundImage" alt="{{ $slide->caption ?? 'TANDS' }}">
-            </div>
-        @empty
-            <div class="slide1 active">
-                <img src="{{ asset('/Images/batch3/YZVS7844.JPG') }}" class="backgroundImage" alt="Tanzania National Debate Society">
-            </div>
-        @endforelse
-        <div class="hero-scrim"></div>
-    </div>
+{{-- ===== Hero ===== --}}
+<section class="hero" data-hero>
+    @forelse ($heroSlides as $slide)
+        <img class="hero__img {{ $loop->first ? 'is-active' : '' }}" src="{{ asset($slide->image_path) }}"
+            alt="{{ $slide->caption ?? 'Tanzania National Debate Society' }}" {{ $loop->first ? '' : 'loading=lazy' }}>
+    @empty
+        <img class="hero__img is-active" src="{{ asset('Images/batch3/YZVS7844.JPG') }}" alt="Tanzania National Debate Society">
+    @endforelse
+    <div class="hero__scrim"></div>
 
-    <div class="hero-content">
-        <span class="hero-eyebrow">Tanzania National Debate Society</span>
-
-        <div class="hero-text-slides">
-            @forelse ($heroSlides as $index => $slide)
-                <div class="hero-text-slide {{ $index === 0 ? 'active' : '' }}">
-                    @if ($slide->caption)
-                        <h2 class="hero-heading">{{ $slide->caption }}</h2>
-                    @endif
-                    @if ($slide->description)
-                        <p class="hero-subtitle">{{ $slide->description }}</p>
-                    @endif
-                </div>
-            @empty
-                <div class="hero-text-slide active">
-                    <h2 class="hero-heading">Tanzania National Debate Society</h2>
-                    <p class="hero-subtitle">Promoting fair, transparent debate, public speaking and quiz excellence across Tanzania and East Africa.</p>
-                </div>
-            @endforelse
+    <div class="wrap hero__inner">
+        <div class="hero__content">
+            <h1 class="eyebrow">Tanzania National Debate Society</h1>
+            <div class="hero__texts">
+                @forelse ($heroSlides as $slide)
+                    <div class="hero__text {{ $loop->first ? 'is-active' : '' }}">
+                        <p class="hero__title">{{ $slide->caption ?: 'Style up. Stand up. Speak up.' }}</p>
+                        @if ($slide->description)
+                            <p>{{ $slide->description }}</p>
+                        @endif
+                    </div>
+                @empty
+                    <div class="hero__text is-active">
+                        <p class="hero__title">Style up. Stand up. Speak up.</p>
+                        <p>Promoting fair, transparent debate, public speaking and quiz excellence across Tanzania and East Africa.</p>
+                    </div>
+                @endforelse
+            </div>
+            <div class="hero__cta">
+                @if ($upcomingEvent)
+                    <a href="{{ $upcomingEvent->url }}#register" class="btn-x btn-x--accent">Register for {{ $upcomingEvent->series ?: $upcomingEvent->title }} {{ $upcomingEvent->year }} <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                    <a href="{{ route('about') }}" class="btn-x btn-x--ghost">Discover our mission</a>
+                @else
+                    <a href="{{ route('about') }}" class="btn-x btn-x--accent">Discover our mission <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                    <a href="{{ route('gallery') }}" class="btn-x btn-x--ghost">View gallery</a>
+                @endif
+            </div>
         </div>
 
-        <div class="hero-cta">
-            <a href="{{ route('about') }}" class="btn-hero-primary">Discover Our Mission</a>
-            <a href="{{ route('gallery') }}" class="btn-hero-ghost">View Gallery</a>
-        </div>
-    </div>
-
-    <div class="hero-controls">
-        <button type="button" class="hero-arrow hero-arrow-prev" aria-label="Previous slide">&#8249;</button>
-        <div class="hero-dots"></div>
-        <button type="button" class="hero-arrow hero-arrow-next" aria-label="Next slide">&#8250;</button>
+        @if ($heroSlides->count() > 1)
+            <div class="hero__controls">
+                <span class="hero__count"><b data-current>01</b> / {{ str_pad($heroSlides->count(), 2, '0', STR_PAD_LEFT) }}</span>
+                <div class="hero__progress"><span data-progress></span></div>
+                <div class="hero__arrows">
+                    <button type="button" data-prev aria-label="Previous slide"><i class="fas fa-arrow-left"></i></button>
+                    <button type="button" data-next aria-label="Next slide"><i class="fas fa-arrow-right"></i></button>
+                </div>
+            </div>
+        @endif
     </div>
 </section>
 
-<section class="section2">
-    <div class="col-md-12">
-        <div class="row">
-            <div class="col-md-6" style="margin-top: 70px">
-                <h1>Tanzania National Debate Society(TANDS)</h1>
-                <h3>ABOUT</h3>
-                <p class="pheader">Our Promise is to uphold the nations</p>
-                <p style="font-size: 18px">{!! $homeAboutIntro !!}</p>
-            </div>
-
-            <div class="col-md-6" style="margin-top: 50px; position: relative; align-self: flex-start;">
-                <img src="{{ $aboutImage ? asset($aboutImage->image_path) : asset('/Images/batch3/YZVS7880.JPG') }}" class="otherImages"
-                    style="width: 100%; height: auto;filter:contrast(140%)" alt="{{ $aboutImage->title ?? 'A team of Tanzania national debate society' }}">
-                <div class="image-text">
-                    <span class="stat-badge-overlay">6+ Years</span>
-                </div>
+{{-- ===== About ===== --}}
+<section class="section">
+    <div class="wrap split">
+        <div>
+            <span class="eyebrow">About TANDS</span>
+            <h2>Our promise is to uphold the nation.</h2>
+            <div class="prose mb-4">{!! $homeAboutIntro !!}</div>
+            <a href="{{ route('about') }}" class="btn-x btn-x--primary">More about us <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+        </div>
+        <div class="about-media">
+            <img src="{{ $aboutImage ? asset($aboutImage->image_path) : asset('Images/batch3/YZVS7880.JPG') }}"
+                alt="{{ $aboutImage->title ?? 'Tanzania National Debate Society participants' }}" loading="lazy">
+            <div class="about-media__badge">
+                <b>6+</b>
+                <span>Years promoting debate</span>
             </div>
         </div>
     </div>
 </section>
 
 @include('FrontEnd.includes.growthStatistics')
+
+{{-- ===== Championships ===== --}}
+@if ($featuredEvents->isNotEmpty())
+    <section class="section">
+        <div class="wrap">
+            <x-section-head eyebrow="Championships" title="Where Tanzania's best speakers compete">
+                The latest edition of each of our championships — open one for its theme, motions and registration.
+            </x-section-head>
+            <div class="grid grid--4">
+                @foreach ($featuredEvents as $featuredEvent)
+                    <x-event-card :event="$featuredEvent" />
+                @endforeach
+            </div>
+        </div>
+    </section>
+@endif
+
 @include('FrontEnd.includes.programs')
+
+{{-- ===== Gallery ===== --}}
+@if ($homeGalleryImages->isNotEmpty())
+    @php $homeTiles = $homeGalleryImages->count() >= 5 ? $homeGalleryImages->take(5) : $homeGalleryImages; @endphp
+    <section class="section">
+        <div class="wrap">
+            <x-section-head eyebrow="Gallery" title="Moments from the floor" :link="route('gallery')" link-label="View full gallery">
+                Opening ceremonies, tense semi-finals and everything in between.
+            </x-section-head>
+            <x-gallery-grid :count="$homeTiles->count()" featured>
+                @foreach ($homeTiles as $image)
+                    @include('FrontEnd.includes.galleryTile', ['image' => $image, 'group' => 'home-gallery'])
+                @endforeach
+            </x-gallery-grid>
+        </div>
+    </section>
+@endif
+
+@include('FrontEnd.includes.testimonials')
 @include('FrontEnd.includes.team')
 @include('FrontEnd.includes.partners')
 
-<section class="section6">
-    <div class="col-md-12" style="margin-top: 50px">
-        <h3>GALLERY</h3>
-        <p class="pheader">Here goes the moments together!</p>
-        <div class="row" style="margin-top: 30px">
-            <div class="col-md-12">
-                <div class="gallery-row">
-                    @foreach ($homeGalleryImages as $image)
-                        <div class="col-md-4">
-                            <div class="gallery-item">
-                                <a data-fancybox="gallery"
-                                    data-caption="{{ $image->title }}, {{ $image->caption }}"
-                                    href="{{ asset($image->image_path) }}">
-                                    <img src="{{ asset($image->image_path) }}" loading="lazy" alt="{{ $image->title }}"
-                                        style="filter: contrast(140%)">
-                                    <div class="card-img-overlay">
-                                        <p class="card-text card-text-white"
-                                            style="font-size: 1.5rem; font-weight: bold; position: absolute; bottom: 0; left: 0; right: 0; padding: 1rem;">
-                                            {{ $image->title }}<br>
-                                            <span
-                                                style="font-family: 'Montserrat', sans-serif;font-weight: normal;font-size: 1rem">{{ $image->caption }}</span>
-                                        </p>
-                                    </div>
-                                </a>
-                            </div>
-                        </div>
-                    @endforeach
-                </div>
-            </div>
+{{-- ===== Subscribe ===== --}}
+<section class="cta-band on-dark" id="subscribe">
+    <img class="cta-band__bg" src="{{ asset('Images/IMG_8922.jpg') }}" alt="" aria-hidden="true" loading="lazy">
+    <div class="wrap split">
+        <div>
+            <span class="eyebrow">Stay in the loop</span>
+            <h2>Be one of the people we update.</h2>
+            <p class="lead mb-0">New championships and registration openings — straight to your inbox the day they go live.</p>
         </div>
-    </div>
-</section>
-@include('FrontEnd.includes.testimonials')
-<section class="section7">
-    <div class="col-md-12" style="margin-top: 50px">
-        <div class="row">
-            <div class="col-md-12 image-container" style="position: relative;">
-                <div class="gradient-overlay2"></div>
-                <img src="{{ asset('/Images/IMG_8922.jpg') }}" class="backgroundImage" id="backgroundImage">
-                <div class="text-overlay">
-                    <h3>SUBSCRIBE</h3>
-                    <p class="pheader">Be one of the people we update!</p>
-                    <form id="subscribe" style="width: 100%">
-                        <div class="mb-3">
-                            <div class="input-group">
-                                <span class="input-group-text"><i class="fab fa-fly"></i></span>
-                                <input type="email" name="Email" class="form-control"
-                                    placeholder="zawadi@gmail.com" required>
-                            </div>
-                        </div>
-                        <button type="submit" class="btn btn-primary d-flex align-items-center">
-                            <i class="fas fa-paper-plane"></i> Send
-                        </button>
-                    </form>
-                    <span id="msg"></span>
-                </div>
+        <form class="form-x form-x--dark" action="{{ route('subscribe.store') }}" method="POST" data-ajax novalidate
+            data-success="You're subscribed! We've sent a confirmation to your inbox.">
+            <label class="form-label" for="subscribeEmail">Email address</label>
+            <div class="inline-form">
+                <input type="email" id="subscribeEmail" name="Email" class="form-control" placeholder="you@example.com" autocomplete="email" required>
+                <button type="submit" class="btn-x btn-x--accent">Subscribe</button>
             </div>
-        </div>
+            <div class="form-status" role="status" aria-live="polite"></div>
+        </form>
     </div>
 </section>

@@ -34,7 +34,7 @@ class GalleryImageController extends Controller
         ]);
 
         GalleryImage::create([
-            'image_path' => $this->uploadImage($request->file('image'), 'gallery'),
+            'image_path' => $this->uploadImage($request->file('image'), 'gallery-photos'),
             'title' => $data['title'] ?? null,
             'caption' => $data['caption'] ?? null,
             'is_featured_home' => $request->boolean('is_featured_home'),
@@ -61,7 +61,7 @@ class GalleryImageController extends Controller
 
         if ($request->hasFile('image')) {
             $this->deleteImage($gallery->image_path);
-            $data['image_path'] = $this->uploadImage($request->file('image'), 'gallery');
+            $data['image_path'] = $this->uploadImage($request->file('image'), 'gallery-photos');
         }
         unset($data['image']);
 

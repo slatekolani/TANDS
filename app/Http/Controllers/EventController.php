@@ -12,6 +12,10 @@ class EventController extends Controller
         $event = Event::where('slug', $slug)->published()->firstOrFail();
         $event->load(['sections', 'galleryImages']);
 
-        return view('FrontEnd.Events.show', compact('event'));
+        $otherEditions = $event->series
+            ? Event::published()->where('series', $event->series)->whereKeyNot($event->id)->orderByDesc('year')->get()
+            : collect();
+
+        return view('FrontEnd.Events.show', compact('event', 'otherEditions'));
     }
 }

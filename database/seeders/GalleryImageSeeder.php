@@ -25,7 +25,7 @@ class GalleryImageSeeder extends Seeder
         ];
 
         foreach ($images as $index => [$source, $title, $caption, $featuredHome]) {
-            $path = $this->copyLegacyImage($source, 'gallery');
+            $path = $this->copyLegacyImage($source, 'gallery-photos');
             if (! $path) {
                 continue;
             }

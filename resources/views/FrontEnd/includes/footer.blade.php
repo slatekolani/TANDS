@@ -1,67 +1,69 @@
-<section class="section8">
-    <div class="container">
-        <div class="row gy-5">
-            <div class="col-lg-3 col-md-6">
-                <div class="footer-brand">TANDS</div>
-                <p class="footer-tagline">Promoting fair, transparent and representative debate, public speaking and quiz excellence across Tanzania and East Africa.</p>
-                <div class="footer-social">
-                    <a href="{{ $socialInstagram }}" target="_blank" aria-label="Instagram">
-                        <i class="fab fa-instagram"></i>
-                    </a>
-                    <a href="{{ $socialTwitter }}" target="_blank" aria-label="Twitter">
-                        <i class="fab fa-twitter"></i>
-                    </a>
-                    <a href="{{ $socialFacebook }}" target="_blank" aria-label="Facebook">
-                        <i class="fab fa-facebook-f"></i>
-                    </a>
+<footer class="site-footer on-dark" id="siteFooter">
+    <div class="wrap">
+        <div class="site-footer__grid">
+            <div class="site-footer__brand">
+                <img src="{{ asset('Logo/tands-logo-white.png') }}" alt="Tanzania National Debate Society" width="870" height="316">
+                <p>Promoting fair, transparent and representative debate, public speaking and quiz excellence across Tanzania and East Africa.</p>
+
+                <ul class="footer-contact">
+                    <li><i class="fas fa-map-marker-alt" aria-hidden="true"></i> <span>{{ $contactPoBox }}, {{ $contactAddress }}</span></li>
+                    <li><i class="fas fa-phone" aria-hidden="true"></i> <a href="tel:{{ preg_replace('/\s+/', '', $contactPhone) }}">{{ $contactPhone }}</a></li>
+                    <li><i class="fas fa-envelope" aria-hidden="true"></i> <a href="mailto:{{ $contactEmail }}">{{ $contactEmail }}</a></li>
+                </ul>
+
+                <div class="socials">
+                    <a href="{{ $socialInstagram }}" target="_blank" rel="noopener" aria-label="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="{{ $socialTwitter }}" target="_blank" rel="noopener" aria-label="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="{{ $socialFacebook }}" target="_blank" rel="noopener" aria-label="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    @if ($whatsappNumber)
+                        <a href="https://wa.me/{{ $whatsappNumber }}" target="_blank" rel="noopener" aria-label="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                    @endif
                 </div>
             </div>
 
-            <div class="col-lg-3 col-md-6">
-                <h3 class="usefulLinks">Quick Links</h3>
-                <div class="footerLinks">
-                    <a href="{{ route('home') }}">Home</a>
-                    <a href="{{ route('about') }}">About</a>
-                    <a href="{{route('gallery')}}">Gallery</a>
-                    <a href="{{route('contactUs')}}">Contact us</a>
-                </div>
-            </div>
-
-            <div class="col-lg-3 col-md-6">
-                <h3 class="usefulLinks">Get in Touch</h3>
-                <ul class="footer-contact-list">
-                    <li><i class="fas fa-map-marker-alt"></i> {{ $contactPoBox }}, {{ $contactAddress }}</li>
-                    <li><i class="fas fa-phone"></i> {{ $contactPhone }}</li>
-                    <li><i class="fas fa-envelope"></i> <a href="mailto:{{ $contactEmail }}">{{ $contactEmail }}</a></li>
+            <div class="footer-col">
+                <h4>Explore</h4>
+                <ul>
+                    <li><a href="{{ route('home') }}">Home</a></li>
+                    <li><a href="{{ route('about') }}">About us</a></li>
+                    <li><a href="{{ route('gallery') }}">Gallery</a></li>
+                    <li><a href="{{ route('contactUs') }}">Contact</a></li>
                 </ul>
             </div>
 
-            <div class="col-lg-3 col-md-6">
-                <h3>Send us a Message</h3>
-                <form id="footerContactForm" class="contact-form" data-source="footer">
-                    <div class="mb-3">
-                        <label for="footerFullNames" class="form-label footer-label">Full Names</label>
-                        <input type="text" id="footerFullNames" class="form-control footer-input" name="fullNames" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="footerUserEmail" class="form-label footer-label">Email Address</label>
-                        <input type="email" id="footerUserEmail" class="form-control footer-input" name="userEmail" required>
-                    </div>
-                    <div class="mb-3">
-                        <label for="footerMessage" class="form-label footer-label">Message</label>
-                        <textarea class="form-control footer-input" id="footerMessage" name="message" rows="3" required></textarea>
-                    </div>
-                    <button type="submit" class="btn footer-submit-btn"><i class="fas fa-paper-plane"></i> Submit</button>
-                    <span class="contact-form-notify footer-notify"></span>
-                </form>
+            <div class="footer-col">
+                <h4>Championships</h4>
+                <ul>
+                    @forelse ($footerEvents as $footerEvent)
+                        <li><a href="{{ $footerEvent->url }}">{{ $footerEvent->series ?: $footerEvent->title }} {{ $footerEvent->year }}</a></li>
+                    @empty
+                        <li>Coming soon</li>
+                    @endforelse
+                </ul>
+            </div>
+
+            <div class="footer-col">
+                <h4>Get involved</h4>
+                <ul>
+                    <li><a href="{{ route('home') }}#subscribe">Subscribe for updates</a></li>
+                    <li><a href="{{ route('contactUs') }}">Partner with us</a></li>
+                    <li><a href="mailto:{{ $contactEmail }}">Email the team</a></li>
+                    <li><a href="{{ route('admin.login') }}" class="footer-staff"><i class="fas fa-lock" aria-hidden="true"></i> Staff login</a></li>
+                </ul>
             </div>
         </div>
-    </div>
-</section>
-<section class="footer-copyright">
-    <p>© Tanzania National Debate Society - <span id="year"></span>. Developed by <a href="https://nextbyte.co.tz/" target="_blank" rel="noopener">Nextbyte ICT Solutions</a></p>
-</section>
 
-<script>
-    document.getElementById('year').textContent = new Date().getFullYear();
-</script>
+        <div class="site-footer__bottom">
+            <span>&copy; <span id="year">{{ date('Y') }}</span> Tanzania National Debate Society. All rights reserved.</span>
+            <span>Developed by <a href="https://nextbyte.co.tz/" target="_blank" rel="noopener">Nextbyte ICT Solutions</a></span>
+        </div>
+    </div>
+</footer>
+
+@if ($whatsappNumber)
+    <a href="https://wa.me/{{ $whatsappNumber }}?text={{ rawurlencode('Hello TANDS, I would like to know more about ') }}"
+        class="wa-widget" id="waWidget" target="_blank" rel="noopener" aria-label="Chat with us on WhatsApp">
+        <span class="wa-widget__icon"><i class="fab fa-whatsapp" aria-hidden="true"></i></span>
+        <span class="wa-widget__text"><small>Questions?</small>Chat with us on WhatsApp</span>
+    </a>
+@endif

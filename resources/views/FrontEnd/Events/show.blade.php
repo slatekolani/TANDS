@@ -1,320 +1,214 @@
 @extends('master')
 
 @section('title', $event->title . ' - Tanzania National Debate Society (TANDS)')
-@section('canonical', 'https://www.tands.or.tz/' . $event->slug)
+@section('canonical', config('app.site_url') . parse_url($event->url, PHP_URL_PATH))
+@if ($event->meta_description)
+    @section('description', $event->meta_description)
+@endif
 
-@section('head')
-    @if ($event->meta_description)
-        <meta name="description" content="{{ $event->meta_description }}">
-    @endif
-    <style>
-        .landing-page {
-            min-height: 60vh;
-            margin-top: 40px;
-            background: linear-gradient(rgba(0, 0, 0, 0.5), rgba(0, 0, 0, 0.5)), url('{{ $event->banner_image ? asset($event->banner_image) : asset('/Images/EAC.jpg') }}') no-repeat center center;
-            background-size: cover;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            text-align: center;
-            color: white;
-            padding: 20px;
-        }
-
-        .landing-content h2 {
-            font-size: 3rem;
-            margin-bottom: 20px;
-        }
-
-        .landing-content p {
-            font-size: 1.5rem;
-        }
-
-        .intro-section, .event-section, .gallery-section {
-            padding: 60px 0;
-            background-color: #f8f9fa;
-        }
-
-        .intro-section:nth-child(even), .event-section:nth-child(even), .gallery-section:nth-child(even) {
-            background-color: #fff;
-        }
-
-        h3.section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            color: #007bff;
-            margin-bottom: 30px;
-        }
-
-        .section-divider {
-            border: none;
-            border-top: 3px solid #007bff;
-            margin: 0 auto 40px;
-            width: 80px;
-        }
-
-        .event-body {
-            max-width: 900px;
-            margin: 0 auto;
-        }
-
-        .section-image {
-            width: 100%;
-            max-height: 420px;
-            object-fit: cover;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-            margin-bottom: 30px;
-        }
-
-        .gallery-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 20px;
-        }
-
-        .gallery-item {
-            position: relative;
-            overflow: hidden;
-            border-radius: 15px;
-            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
-        }
-
-        .gallery-image {
-            width: 100%;
-            height: 220px;
-            object-fit: cover;
-        }
-
-        .gallery-overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            width: 100%;
-            background: rgba(0, 0, 0, 0.55);
-            color: white;
-            padding: 8px 12px;
-            font-size: 0.95rem;
-        }
-
-        .register-section {
-            padding: 60px 0;
-            background: #323366;
-        }
-
-        .register-card {
-            max-width: 820px;
-            margin: 0 auto;
-            background: #fff;
-            border-radius: 15px;
-            padding: 40px 48px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-        }
-
-        .register-card .form-label {
-            font-weight: 500;
-            font-size: .92rem;
-            color: #24263b;
-        }
-
-        .register-card .form-control,
-        .register-card .form-select {
-            border: 1px solid #d8dee8;
-            border-radius: 8px;
-            padding: 10px 14px;
-        }
-
-        .register-card .form-control:focus,
-        .register-card .form-select:focus {
-            border-color: #03A3DE;
-            box-shadow: 0 0 0 3px rgba(3, 163, 222, .15);
-        }
-
-        .register-card .form-section-label {
-            font-size: .78rem;
-            font-weight: 700;
-            letter-spacing: .06em;
-            text-transform: uppercase;
-            color: #03A3DE;
-            margin: 28px 0 14px;
-        }
-
-        .register-card .form-section-label:first-of-type {
-            margin-top: 4px;
-        }
-
-        .register-card button[type="submit"] {
-            background: #03A3DE;
-            border: none;
-            color: #fff;
-            font-weight: 500;
-            padding: 12px 32px;
-            border-radius: 8px;
-            width: 100%;
-        }
-
-        .register-card button[type="submit"]:hover {
-            background: #24263b;
-        }
-
-        .register-form-notify {
-            display: block;
-            margin-top: 14px;
-            font-weight: 500;
-            text-align: center;
-        }
-
-        @media screen and (max-width: 768px) {
-            .register-card { padding: 28px 22px; }
-        }
-
-        @media screen and (max-width: 768px) {
-            .landing-page { min-height: 45vh; }
-            .landing-content h2 { font-size: 2rem; }
-            .landing-content p { font-size: 1.2rem; }
-            h3.section-title { font-size: 2rem; }
-        }
-    </style>
-@endsection
+@php
+    $edition = trim(($event->series ?? '') . ' ' . ($event->year ?? ''));
+    $statusLabel = ['upcoming' => 'Registration open', 'ongoing' => 'Happening now', 'past' => 'Past edition'][$event->status] ?? ucfirst($event->status);
+    $toc = collect();
+    if ($event->description) { $toc->push(['id' => 'about', 'label' => 'About the event']); }
+    foreach ($event->sections as $section) { $toc->push(['id' => 'section-' . $section->id, 'label' => $section->title]); }
+    if ($event->galleryImages->isNotEmpty()) { $toc->push(['id' => 'gallery', 'label' => 'Gallery']); }
+    if ($event->isRegistrationOpen()) { $toc->push(['id' => 'register', 'label' => 'Register']); }
+@endphp
 
 @section('content')
-    <section class="landing-page">
-        <div class="landing-content">
-            <h2>{{ $event->title }}</h2>
-            @if ($event->theme)
-                <p>Theme: {{ $event->theme }}</p>
+    <x-page-hero :eyebrow="$edition ?: 'Championship'" :title="$event->title"
+        :image="$event->banner_image ? asset($event->banner_image) : asset('Images/EAC.jpg')"
+        :crumbs="['Events' => null, ($edition ?: $event->title) => null]">
+        @if ($event->theme)
+            <p class="lead mb-0">Theme: <strong class="text-white">{{ $event->theme }}</strong></p>
+        @endif
+        <div class="meta-row">
+            <span><i class="fas fa-circle" style="font-size:.5rem" aria-hidden="true"></i> {{ $statusLabel }}</span>
+            @if ($event->event_date)
+                <span><i class="far fa-calendar" aria-hidden="true"></i> {{ $event->event_date->format('l, d F Y') }}</span>
             @endif
-            @if ($event->event_date || $event->location)
-                <p style="font-size:1.1rem">
-                    {{ optional($event->event_date)->format('d M Y') }}
-                    @if ($event->event_date && $event->location) &middot; @endif
-                    {{ $event->location }}
-                </p>
+            @if ($event->location)
+                <span><i class="fas fa-map-marker-alt" aria-hidden="true"></i> {{ $event->location }}</span>
             @endif
+        </div>
+        <div class="hero__cta">
             @if ($event->isRegistrationOpen())
-                <a href="#register" class="btn btn-primary mt-3">Register Now</a>
+                <a href="#register" class="btn-x btn-x--accent">Register now <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
             @endif
+            @if ($toc->isNotEmpty())
+                <a href="#details" class="btn-x btn-x--ghost">Event details</a>
+            @endif
+        </div>
+    </x-page-hero>
+
+    <section class="section" id="details">
+        <div class="wrap event-layout">
+            <div>
+                @if ($event->description)
+                    <article class="event-block" id="about">
+                        <span class="eyebrow">Overview</span>
+                        <h2>About the event</h2>
+                        <div class="prose">{!! $event->description !!}</div>
+                    </article>
+                @endif
+
+                @foreach ($event->sections as $section)
+                    <article class="event-block" id="section-{{ $section->id }}">
+                        <span class="eyebrow">{{ $edition ?: 'Details' }}</span>
+                        <h2>{{ $section->title }}</h2>
+                        @if (! empty($section->image_path))
+                            <img src="{{ asset($section->image_path) }}" alt="{{ $section->title }}" class="event-block__image" loading="lazy">
+                        @endif
+                        <div class="prose">{!! $section->body !!}</div>
+                    </article>
+                @endforeach
+
+                @if (! $event->description && $event->sections->isEmpty())
+                    <div class="empty-state">Full details for this edition will be published soon.</div>
+                @endif
+            </div>
+
+            <aside class="event-aside" aria-label="Event summary">
+                <div class="card-x">
+                    <div class="aside-title">Key facts</div>
+                    <dl class="facts">
+                        <div><dt>Status</dt><dd><span class="tag {{ in_array($event->status, ['upcoming', 'ongoing']) ? 'tag--live' : '' }}">{{ $statusLabel }}</span></dd></div>
+                        @if ($event->event_date)
+                            <div><dt>Date</dt><dd>{{ $event->event_date->format('d M Y') }}</dd></div>
+                        @endif
+                        @if ($event->location)
+                            <div><dt>Venue</dt><dd>{{ $event->location }}</dd></div>
+                        @endif
+                        @if ($event->series)
+                            <div><dt>Series</dt><dd>{{ $event->series }}</dd></div>
+                        @endif
+                        @if ($event->year)
+                            <div><dt>Edition</dt><dd>{{ $event->year }}</dd></div>
+                        @endif
+                    </dl>
+                    @if ($event->isRegistrationOpen())
+                        <a href="#register" class="btn-x btn-x--accent btn-x--block">Register now <i class="fas fa-arrow-right" aria-hidden="true"></i></a>
+                    @else
+                        <p class="mb-0 small text-muted">Registration for this edition is closed.</p>
+                    @endif
+                </div>
+
+                @if ($toc->count() > 1)
+                    <nav class="card-x toc-card" aria-label="On this page">
+                        <div class="aside-title">On this page</div>
+                        <ol class="toc">
+                            @foreach ($toc as $item)
+                                <li><a href="#{{ $item['id'] }}">{{ $item['label'] }}</a></li>
+                            @endforeach
+                        </ol>
+                    </nav>
+                @endif
+
+                @if ($otherEditions->isNotEmpty())
+                    <div class="card-x">
+                        <div class="aside-title">Other {{ $event->series }} editions</div>
+                        <div class="editions">
+                            @foreach ($otherEditions as $other)
+                                <a href="{{ $other->url }}">{{ $other->year ?: $other->title }}</a>
+                            @endforeach
+                        </div>
+                    </div>
+                @endif
+            </aside>
         </div>
     </section>
 
-    @if ($event->description)
-        <section class="intro-section">
-            <div class="container event-body">
-                <h3 class="section-title">About the Event</h3>
-                <hr class="section-divider">
-                {!! $event->description !!}
-            </div>
-        </section>
-    @endif
-
     @if ($event->galleryImages->isNotEmpty())
-        <section class="gallery-section">
-            <div class="container">
-                <h3 class="section-title">Gallery</h3>
-                <hr class="section-divider">
-                <div class="gallery-grid">
+        <section class="section section--alt" id="gallery">
+            <div class="wrap">
+                <x-section-head eyebrow="Gallery" :title="'Moments from ' . ($edition ?: $event->title)" />
+                <x-gallery-grid :count="$event->galleryImages->count()">
                     @foreach ($event->galleryImages as $image)
-                        <div class="gallery-item">
-                            <img src="{{ asset($image->image_path) }}" alt="{{ $image->caption }}" class="gallery-image">
-                            @if ($image->caption)
-                                <div class="gallery-overlay">{{ $image->caption }}</div>
-                            @endif
-                        </div>
+                        @include('FrontEnd.includes.galleryTile', ['image' => $image, 'group' => 'event-' . $event->id])
                     @endforeach
-                </div>
+                </x-gallery-grid>
             </div>
         </section>
     @endif
-
-    @foreach ($event->sections as $section)
-        <section class="event-section">
-            <div class="container event-body">
-                <h3 class="section-title">{{ $section->title }}</h3>
-                <hr class="section-divider">
-                @if (! empty($section->image_path))
-                    <img src="{{ asset($section->image_path) }}" alt="{{ $section->title }}" class="section-image">
-                @endif
-                {!! $section->body !!}
-            </div>
-        </section>
-    @endforeach
 
     @if ($event->isRegistrationOpen())
-        <section class="register-section" id="register">
-            <div class="container">
-                <div class="register-card">
-                    <h3 class="section-title" style="margin-bottom:6px">Register for this Event</h3>
-                    <p class="text-center text-muted mb-4">Secure your spot — fill in your details below.</p>
-                    <form class="event-register-form" action="{{ route('event.register', $event) }}" novalidate>
-                        <div class="form-section-label">Contact Details</div>
+        <section class="section {{ $event->galleryImages->isNotEmpty() ? '' : 'section--alt' }}" id="register">
+            <div class="wrap wrap--narrow">
+                <div class="form-card">
+                    <div class="form-card__head">
+                        <span class="eyebrow">Registration</span>
+                        <h2>Register for {{ $edition ?: $event->title }}</h2>
+                        <p class="mb-0 text-muted">Secure your spot — fill in your details below. We'll email you a confirmation straight away.</p>
+                    </div>
+
+                    <form class="form-x" action="{{ route('event.register', $event) }}" method="POST" data-ajax novalidate
+                        data-success="You're registered! Check your inbox for your confirmation.">
+                        <div class="form-group-label">Contact details</div>
                         <div class="row g-3">
                             <div class="col-md-6">
-                                <label class="form-label" for="reg-name-{{ $event->id }}">Full Name</label>
-                                <input type="text" id="reg-name-{{ $event->id }}" name="name" class="form-control" required aria-describedby="reg-name-{{ $event->id }}-error" aria-invalid="false">
-                                <div class="invalid-feedback" id="reg-name-{{ $event->id }}-error" role="alert"></div>
+                                <label class="form-label" for="reg-name">Full name</label>
+                                <input type="text" id="reg-name" name="name" class="form-control" autocomplete="name" required aria-describedby="reg-name-error" aria-invalid="false">
+                                <div class="invalid-feedback" id="reg-name-error"></div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label" for="reg-email-{{ $event->id }}">Email Address</label>
-                                <input type="email" id="reg-email-{{ $event->id }}" name="email" class="form-control" required aria-describedby="reg-email-{{ $event->id }}-error" aria-invalid="false">
-                                <div class="invalid-feedback" id="reg-email-{{ $event->id }}-error" role="alert"></div>
+                                <label class="form-label" for="reg-email">Email address</label>
+                                <input type="email" id="reg-email" name="email" class="form-control" autocomplete="email" required aria-describedby="reg-email-error" aria-invalid="false">
+                                <div class="invalid-feedback" id="reg-email-error"></div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label" for="reg-phone-{{ $event->id }}">Phone Number</label>
-                                <input type="tel" id="reg-phone-{{ $event->id }}" name="phone" class="form-control" required aria-describedby="reg-phone-{{ $event->id }}-error" aria-invalid="false">
-                                <div class="invalid-feedback" id="reg-phone-{{ $event->id }}-error" role="alert"></div>
+                                <label class="form-label" for="reg-phone">Phone number</label>
+                                <input type="tel" id="reg-phone" name="phone" class="form-control" autocomplete="tel" required aria-describedby="reg-phone-error" aria-invalid="false">
+                                <div class="invalid-feedback" id="reg-phone-error"></div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label" for="reg-gender-{{ $event->id }}">Gender</label>
-                                <select id="reg-gender-{{ $event->id }}" name="gender" class="form-select" required aria-describedby="reg-gender-{{ $event->id }}-error" aria-invalid="false">
+                                <label class="form-label" for="reg-gender">Gender</label>
+                                <select id="reg-gender" name="gender" class="form-select" required aria-describedby="reg-gender-error" aria-invalid="false">
                                     <option value="" disabled selected>Select gender</option>
                                     <option value="Male">Male</option>
                                     <option value="Female">Female</option>
                                     <option value="Other">Other</option>
                                 </select>
-                                <div class="invalid-feedback" id="reg-gender-{{ $event->id }}-error" role="alert"></div>
+                                <div class="invalid-feedback" id="reg-gender-error"></div>
                             </div>
                         </div>
 
-                        <div class="form-section-label">Participant Details</div>
+                        <div class="form-group-label">Participant details</div>
                         <div class="row g-3">
                             <div class="col-md-4">
-                                <label class="form-label" for="reg-age-{{ $event->id }}">Age</label>
-                                <input type="number" id="reg-age-{{ $event->id }}" name="age" class="form-control" min="5" max="100" required aria-describedby="reg-age-{{ $event->id }}-error" aria-invalid="false">
-                                <div class="invalid-feedback" id="reg-age-{{ $event->id }}-error" role="alert"></div>
+                                <label class="form-label" for="reg-age">Age</label>
+                                <input type="number" id="reg-age" name="age" class="form-control" min="5" max="100" inputmode="numeric" required aria-describedby="reg-age-error" aria-invalid="false">
+                                <div class="invalid-feedback" id="reg-age-error"></div>
                             </div>
                             <div class="col-md-8">
-                                <label class="form-label" for="reg-school-{{ $event->id }}">School</label>
-                                <input type="text" id="reg-school-{{ $event->id }}" name="school" class="form-control" required aria-describedby="reg-school-{{ $event->id }}-error" aria-invalid="false">
-                                <div class="invalid-feedback" id="reg-school-{{ $event->id }}-error" role="alert"></div>
+                                <label class="form-label" for="reg-school">School</label>
+                                <input type="text" id="reg-school" name="school" class="form-control" autocomplete="organization" required aria-describedby="reg-school-error" aria-invalid="false">
+                                <div class="invalid-feedback" id="reg-school-error"></div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label" for="reg-category-{{ $event->id }}">Category</label>
-                                <select id="reg-category-{{ $event->id }}" name="category" class="form-select" required aria-describedby="reg-category-{{ $event->id }}-error" aria-invalid="false">
+                                <label class="form-label" for="reg-category">Category</label>
+                                <select id="reg-category" name="category" class="form-select" required aria-describedby="reg-category-error" aria-invalid="false">
                                     <option value="" disabled selected>Select category</option>
                                     @foreach (\App\Http\Controllers\EventRegistrationController::CATEGORIES as $category)
                                         <option value="{{ $category }}">{{ $category }}</option>
                                     @endforeach
                                 </select>
-                                <div class="invalid-feedback" id="reg-category-{{ $event->id }}-error" role="alert"></div>
+                                <div class="invalid-feedback" id="reg-category-error"></div>
                             </div>
                             <div class="col-md-6">
-                                <label class="form-label" for="reg-amount_paid-{{ $event->id }}">Amount Paid (TZS)</label>
-                                <input type="number" id="reg-amount_paid-{{ $event->id }}" name="amount_paid" class="form-control" min="0" step="0.01" required aria-describedby="reg-amount_paid-{{ $event->id }}-error" aria-invalid="false">
-                                <div class="invalid-feedback" id="reg-amount_paid-{{ $event->id }}-error" role="alert"></div>
+                                <label class="form-label" for="reg-amount_paid">Amount paid (TZS)</label>
+                                <input type="number" id="reg-amount_paid" name="amount_paid" class="form-control" min="0" step="0.01" inputmode="decimal" required aria-describedby="reg-amount_paid-error" aria-invalid="false">
+                                <div class="invalid-feedback" id="reg-amount_paid-error"></div>
                             </div>
                         </div>
 
-                        <div class="form-section-label">Anything Else?</div>
-                        <div class="row g-3">
-                            <div class="col-12">
-                                <label class="form-label" for="reg-message-{{ $event->id }}">Message (optional)</label>
-                                <textarea id="reg-message-{{ $event->id }}" name="message" class="form-control" rows="3" aria-describedby="reg-message-{{ $event->id }}-error" aria-invalid="false"></textarea>
-                                <div class="invalid-feedback" id="reg-message-{{ $event->id }}-error" role="alert"></div>
-                            </div>
-                        </div>
+                        <div class="form-group-label">Anything else?</div>
+                        <label class="form-label" for="reg-message">Message <span class="text-muted fw-normal">(optional)</span></label>
+                        <textarea id="reg-message" name="message" class="form-control" rows="3" aria-describedby="reg-message-error" aria-invalid="false"></textarea>
+                        <div class="invalid-feedback" id="reg-message-error"></div>
 
-                        <button type="submit" class="btn mt-4">Submit Registration</button>
-                        <span class="register-form-notify" role="alert" aria-live="polite"></span>
+                        <button type="submit" class="btn-x btn-x--accent btn-x--block mt-4">Submit registration <i class="fas fa-arrow-right" aria-hidden="true"></i></button>
+                        <div class="form-status" role="status" aria-live="polite"></div>
                     </form>
                 </div>
             </div>

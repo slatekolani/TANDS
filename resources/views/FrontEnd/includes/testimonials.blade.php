@@ -1,36 +1,30 @@
-<section class="section9 testimonials-section">
-    <div class="col-md-12">
-        <h3>TESTIMONIALS</h3>
-        <p class="pheader">Comments from our debate participants</p>
-
-        <div class="testimonial-carousel">
-            <div class="testimonial-card">
-                @foreach ($testimonials as $testimonial)
-                    <div class="mySlides">
-                        <i class="fas fa-quote-left testimonial-quote-icon"></i>
-                        <p class="testimonial-message">{{ $testimonial->message }}</p>
-                        <div class="testimonial-author">
-                            <span class="testimonial-avatar">
-                                {{ collect(explode(' ', $testimonial->author_name))->map(fn ($word) => mb_substr($word, 0, 1))->take(2)->implode('') }}
-                            </span>
-                            <span class="testimonial-name">{{ $testimonial->author_name }}</span>
-                        </div>
+@if ($testimonials->isNotEmpty())
+    <section class="section section--dark">
+        <div class="wrap quotes" data-quotes>
+            <div>
+                <span class="eyebrow">Testimonials</span>
+                <h2>What our participants say</h2>
+                <p class="lead">Comments from our debate participants — in their own words.</p>
+                @if ($testimonials->count() > 1)
+                    <div class="quotes__controls">
+                        <button type="button" class="round-btn" data-prev aria-label="Previous testimonial"><i class="fas fa-arrow-left"></i></button>
+                        <button type="button" class="round-btn" data-next aria-label="Next testimonial"><i class="fas fa-arrow-right"></i></button>
+                        <span class="quotes__count"><b data-current>01</b> / {{ str_pad($testimonials->count(), 2, '0', STR_PAD_LEFT) }}</span>
                     </div>
-                @endforeach
+                @endif
             </div>
-
-            @if ($testimonials->count() > 1)
-                <a class="prev" onclick="plusSlides(-1)">&#10094;</a>
-                <a class="next" onclick="plusSlides(1)">&#10095;</a>
-            @endif
-        </div>
-
-        @if ($testimonials->count() > 1)
-            <div class="dot-container">
+            <div class="quotes__stage" aria-live="polite">
                 @foreach ($testimonials as $testimonial)
-                    <span class="dot" onclick="currentSlide({{ $loop->iteration }})"></span>
+                    <blockquote class="quote {{ $loop->first ? 'is-active' : '' }}">
+                        <i class="fas fa-quote-left" aria-hidden="true"></i>
+                        <p>{{ $testimonial->message }}</p>
+                        <footer>
+                            <span class="avatar" aria-hidden="true">{{ collect(explode(' ', $testimonial->author_name))->map(fn ($w) => mb_substr($w, 0, 1))->take(2)->implode('') }}</span>
+                            <cite>{{ $testimonial->author_name }}<span>TANDS participant</span></cite>
+                        </footer>
+                    </blockquote>
                 @endforeach
             </div>
-        @endif
-    </div>
-</section>
+        </div>
+    </section>
+@endif

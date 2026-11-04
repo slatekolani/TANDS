@@ -3,54 +3,72 @@
 @section('title', 'Contact Us - Tanzania National Debate Society (TANDS)')
 @section('canonical', 'https://www.tands.or.tz/contactUs')
 
-@section('head')
-
-@endsection
-
 @section('content')
+    <x-page-hero eyebrow="Contact" title="Get in touch" :crumbs="['Contact' => null]">
+        <p class="lead mb-0">Questions about a championship, a partnership idea or bringing debate to your school — send it our way.</p>
+    </x-page-hero>
 
-<section class="section13" style="margin-top: 140px">
-    <div class="container">
-        <div class="row">
-            <div class="col-md-6 mb-3">
-                <h1 class="weAreSocial">Contact Information</h1>
-                <div
-                    style="flex-direction: column; margin-top: 20px;">
-                    <address>Tanzania National Debate Society,</address>
-                    <address>{{ $contactPoBox }},</address>
-                    <address>{{ $contactAddress }}.</address>
-                    <address>{{ $contactPhone }}</address>
-                    <address><a href="mailto:{{ $contactEmail }}">{{ $contactEmail }}</a></address>
+    <section class="section">
+        <div class="wrap split split--top">
+            <div>
+                <span class="eyebrow">Contact information</span>
+                <h2>Talk to the TANDS team</h2>
+                <ul class="contact-list mt-4">
+                    <li>
+                        <span class="icon-tile"><i class="fas fa-map-marker-alt" aria-hidden="true"></i></span>
+                        <div><b>Visit or write to us</b><span>Tanzania National Debate Society, {{ $contactPoBox }}, {{ $contactAddress }}</span></div>
+                    </li>
+                    <li>
+                        <span class="icon-tile"><i class="fas fa-phone" aria-hidden="true"></i></span>
+                        <div><b>Call us</b><a href="tel:{{ preg_replace('/\s+/', '', $contactPhone) }}">{{ $contactPhone }}</a></div>
+                    </li>
+                    <li>
+                        <span class="icon-tile"><i class="fas fa-envelope" aria-hidden="true"></i></span>
+                        <div><b>Email us</b><a href="mailto:{{ $contactEmail }}">{{ $contactEmail }}</a></div>
+                    </li>
+                </ul>
+            </div>
+
+            <div class="form-card">
+                <div class="form-card__head">
+                    <h2>Send a message</h2>
+                    <p class="mb-0 text-muted">You'll get a copy by email as soon as it's sent.</p>
                 </div>
-            </div>
-            <div class="col-md-6 mb-3">
-                <h1>Get in Touch</h1>
-                <form id="contactPageForm" class="contact-form" data-source="contact_page">
-                    <div class="mb-3">
-                        <label for="pageFullNames" class="form-label">Full Names</label>
-                        <input type="text" id="pageFullNames" class="form-control" name="fullNames" required>
+                <form class="form-x" action="{{ route('contact.store') }}" method="POST" data-ajax novalidate
+                    data-success="Thanks! Your message is in — we've emailed you a confirmation.">
+                    <input type="hidden" name="source" value="contact_page">
+                    <div class="row g-3">
+                        <div class="col-sm-6">
+                            <label for="pageFullNames" class="form-label">Full name</label>
+                            <input type="text" id="pageFullNames" class="form-control" name="fullNames" autocomplete="name" required
+                                aria-describedby="pageFullNames-error" aria-invalid="false">
+                            <div class="invalid-feedback" id="pageFullNames-error"></div>
+                        </div>
+                        <div class="col-sm-6">
+                            <label for="pageUserEmail" class="form-label">Email address</label>
+                            <input type="email" id="pageUserEmail" class="form-control" name="userEmail" autocomplete="email" required
+                                aria-describedby="pageUserEmail-error" aria-invalid="false">
+                            <div class="invalid-feedback" id="pageUserEmail-error"></div>
+                        </div>
+                        <div class="col-12">
+                            <label for="pageMessage" class="form-label">Message</label>
+                            <textarea id="pageMessage" class="form-control" name="message" rows="5" required
+                                aria-describedby="pageMessage-error" aria-invalid="false"></textarea>
+                            <div class="invalid-feedback" id="pageMessage-error"></div>
+                        </div>
                     </div>
-                    <div class="mb-3">
-                        <label for="pageUserEmail" class="form-label">Email Address</label>
-                        <input type="email" id="pageUserEmail" class="form-control" name="userEmail" aria-describedby="pageEmailHelp" required>
-                        <div id="pageEmailHelp" class="form-text">We'll never share your email with anyone else.</div>
-                    </div>
-                    <div class="mb-3">
-                        <label for="pageMessage" class="form-label">Message</label>
-                        <textarea class="form-control" id="pageMessage" name="message" rows="4" required></textarea>
-                    </div>
-                    <button type="submit" class="btn btn-primary"><i class="fas fa-paper-plane"></i>Submit</button>
+                    <button type="submit" class="btn-x btn-x--primary btn-x--block mt-4">Send message <i class="fas fa-arrow-right" aria-hidden="true"></i></button>
+                    <div class="form-status" role="status" aria-live="polite"></div>
                 </form>
-                <span class="contact-form-notify"></span>
             </div>
-
-
         </div>
-    </div>
-</section>
-<section>
-    <div class="col-md-12">
-<iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1310.239569570649!2d36.634579909693905!3d-3.2864791893906657!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x18371f004990162b%3A0x1cb1658eea444186!2sTanzania%20National%20Debate%20Society!5e0!3m2!1sen!2stz!4v1721834409184!5m2!1sen!2stz" width="100%" height="450" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
-    </div>
-</section>
+    </section>
+
+    <section class="section section--flush-top">
+        <div class="wrap">
+            <iframe class="map-frame" title="Map showing the Tanzania National Debate Society office"
+                src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1310.239569570649!2d36.634579909693905!3d-3.2864791893906657!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x18371f004990162b%3A0x1cb1658eea444186!2sTanzania%20National%20Debate%20Society!5e0!3m2!1sen!2stz!4v1721834409184!5m2!1sen!2stz"
+                allowfullscreen loading="lazy" referrerpolicy="no-referrer-when-downgrade"></iframe>
+        </div>
+    </section>
 @endsection

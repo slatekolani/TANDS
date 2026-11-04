@@ -34,6 +34,11 @@
                     <input type="text" name="contact_phone" class="form-control" value="{{ old('contact_phone', $settings['contact_phone']) }}">
                 </div>
                 <div class="col-md-6">
+                    <label class="form-label">WhatsApp Number</label>
+                    <input type="text" name="whatsapp_number" class="form-control" placeholder="e.g. +255 787 225 427" value="{{ old('whatsapp_number', $settings['whatsapp_number']) }}">
+                    <div class="form-text">Used by the "Chat with us on WhatsApp" button. Leave blank to use the phone number above.</div>
+                </div>
+                <div class="col-md-6">
                     <label class="form-label">Public Contact Email</label>
                     <input type="email" name="contact_email" class="form-control" value="{{ old('contact_email', $settings['contact_email']) }}">
                 </div>

@@ -1,88 +1,31 @@
-<style>
-    .bgimg-1,
-    .bgimg-2,
-    .bgimg-3 {
-        position: relative;
-        opacity: 0.95;
-        background-attachment: fixed;
-        background-position: center;
-        background-repeat: no-repeat;
-        background-size: cover;
-
-    }
-
-
-    .bgimg-2 {
-        background-image: url("{{ asset('Images/batch2/IMG_8872.jpg') }}");
-        min-height: 400px;
-        filter: contrast(100%)
-    }
-
-    .bgimg-3 {
-        background-image: url("{{asset('/Images/batch2/_TM_0317.jpg') }}");
-        min-height: 400px;
-        filter: contrast(120%)
-    }
-
-    .caption {
-        position: absolute;
-        left: 0;
-        top: 50%;
-        width: 100%;
-        text-align: center;
-        color: #000;
-    }
-
-    .caption span.border {
-        background-color: #111;
-        color: #fff;
-        padding: 18px;
-        font-size: 25px;
-        letter-spacing: 10px;
-    }
-
-
-
-    @media only screen and (max-device-width: 1024px) {
-
-        .bgimg-2,
-        .bgimg-3 {
-            min-height: 300px;
-            background-attachment: scroll;
-        }
-    }
-</style>
-<section style="margin-top: 30px">
-
-    <div style="color: black;background-color:white;">
-        <h1 style="text-align:center;font-size:30px">ABOUT TANZANIA NATIONAL DEBATE SOCIETY</h1>
-        {!! $aboutIntro !!}
+<section class="section">
+    <div class="wrap split split--top">
+        <div>
+            <span class="eyebrow">Who we are</span>
+            <h2>A platform for fair, transparent and representative debate.</h2>
+        </div>
+        <div class="prose">{!! $aboutIntro !!}</div>
     </div>
+</section>
 
-    <div class="bgimg-2">
-        <div class="caption">
-            <span class="border"
-                style="background-color:whitesmoke;height:50%;font-size:25px;color:#323366;opacity:0.8"><b>MISSION</b></span>
+<section class="section section--alt">
+    <div class="wrap">
+        <x-section-head eyebrow="Purpose" title="Mission & vision" />
+        <div class="grid grid--2">
+            <article class="card-x pillar">
+                <img src="{{ asset('Images/batch2/IMG_8872.jpg') }}" alt="Students debating at a TANDS championship" loading="lazy">
+                <div class="pillar__body">
+                    <span class="eyebrow">Our mission</span>
+                    <p>{{ $aboutMission }}</p>
+                </div>
+            </article>
+            <article class="card-x pillar">
+                <img src="{{ asset('Images/batch2/_TM_0317.jpg') }}" alt="A student delivering a public speech" loading="lazy">
+                <div class="pillar__body">
+                    <span class="eyebrow">Our vision</span>
+                    <p>{{ $aboutVision }}</p>
+                </div>
+            </article>
         </div>
     </div>
-
-    <div style="position:relative;">
-        <div style="color:#ddd;background: linear-gradient(to left, #03A3DE, #323366);padding:15px 15px;">
-            <p>{{ $aboutMission }}</p>
-        </div>
-    </div>
-
-    <div class="bgimg-3">
-        <div class="caption">
-            <span class="border"
-                style="background-color:whitesmoke;height:50%;font-size:25px;color:#323366;opacity:0.8"><b>VISION</b></span>
-        </div>
-    </div>
-
-    <div style="position:relative;">
-        <div style="color:#ddd;background: linear-gradient(to left,#323366, #03A3DE);padding:15px 15px;">
-            <p>{{ $aboutVision }}</p>
-        </div>
-    </div>
-
 </section>
