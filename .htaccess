@@ -9,6 +9,21 @@
     RewriteCond %{HTTP:Authorization} .
     RewriteRule .* - [E=HTTP_AUTHORIZATION:%{HTTP:Authorization}]
 
+    # The site is served from the project root, so work out the URL base
+    # this folder lives at ("/" on the live server, "/TANDS/" on XAMPP).
+    RewriteCond %{REQUEST_URI}::$1 ^(.*?/)(.*)::\2$
+    RewriteRule ^(.*)$ - [E=TANDS_BASE:%1]
+
+    # Never serve source code, config, logs or dependency manifests.
+    RewriteRule ^(app|bootstrap|config|database|resources|routes|storage|tests|vendor|node_modules)(/|$) - [F,L]
+    RewriteRule ^(\.env.*|composer\.(json|lock)|package(-lock)?\.json|artisan|phpunit\.xml|webpack\.mix\.js|server\.php)$ - [F,L]
+
+    # Assets live in public/: serve them from there when the root has no copy
+    # (e.g. /css/tands.css -> public/css/tands.css).
+    RewriteCond %{REQUEST_FILENAME} !-f
+    RewriteCond %{DOCUMENT_ROOT}%{ENV:TANDS_BASE}public/$1 -f
+    RewriteRule ^(.*)$ public/$1 [L]
+
     # Redirect Trailing Slashes If Not A Folder...
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_URI} (.+)/$
